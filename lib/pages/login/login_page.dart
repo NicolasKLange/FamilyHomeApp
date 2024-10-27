@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../../assets/components/image_style/square_tile.dart';
 import '../../assets/components/text_fields/text_fields_login.dart';
@@ -7,11 +9,15 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   //controlador de edição de texto
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  //Método sign in usuário
-  void signUserIn() {}
+  //Método sign in usuário com email e senha
+  void signUserIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text, 
+        password: passwordController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +48,7 @@ class LoginPage extends StatelessWidget {
               ),
               //TextFields para email
               Textfields(
-                controller: usernameController,
+                controller: emailController,
                 hintText: "Email",
                 obscureText: false,
               ),
@@ -121,9 +127,7 @@ class LoginPage extends StatelessWidget {
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SquareTile(
-                      imagePath:
-                          'lib/assets/images/signInGoogle.png'),
+                  SquareTile(imagePath: 'lib/assets/images/signInGoogle.png'),
                 ],
               ),
               const SizedBox(
