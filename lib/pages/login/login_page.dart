@@ -1,22 +1,77 @@
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../../assets/components/image_style/square_tile.dart';
 import '../../assets/components/text_fields/text_fields_login.dart';
 import '../../assets/components/buttons/button_login.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
-  //controlador de edição de texto
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  //controladores
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   //Método sign in usuário com email e senha
+  //Método sign in usuário com email e senha
   void signUserIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text, 
-        password: passwordController.text);
+    //Circulo de carregando
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    // try sign in
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+      // pop circulo carregando
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      // pop circulo carregando
+      Navigator.pop(context);
+      // email errado
+      if (e.code == 'user-not-found') {
+        wrongEmailMessage();
+      }
+      // senha errada
+      else if (e.code == 'wrong-password') {
+        wrongPasswordMessage();
+      }
+    }
+  }
+
+  // Mensagem de erro de email popup
+  void wrongEmailMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Email incorreto'),
+        );
+      },
+    );
+  }
+
+  // Mensagem de erro de senha popup
+  void wrongPasswordMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Senha incorreta'),
+        );
+      },
+    );
   }
 
   @override
@@ -86,6 +141,7 @@ class LoginPage extends StatelessWidget {
               Button_login(
                 onTap: signUserIn,
               ),
+
               const SizedBox(
                 height: 25,
               ),
