@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../assets/components/image_style/square_tile.dart';
 import '../../assets/components/text_fields/text_fields_login.dart';
@@ -14,40 +15,43 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   //controladores
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+   TextEditingController emailController = TextEditingController();
+   TextEditingController passwordController = TextEditingController();
 
+  bool isloading=false;
   //Método sign in usuário com email e senha
   //Método sign in usuário com email e senha
-  void signUserIn() async {
+signUserIn() async {
+    setState(() {
+      isloading = true;
+    });
     //Circulo de carregando
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return const Center(
+    //       child: CircularProgressIndicator(),
+    //     );
+    //   },
+    // );
 
     // try sign in
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       // pop circulo carregando
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
+      // Navigator.pop(context);
+    } on FirebaseAuthException catch(e) {
       // pop circulo carregando
-      Navigator.pop(context);
+      // Navigator.pop(context);
       // email errado
-      if (e.code == 'user-not-found') {
-        wrongEmailMessage();
-      }
-      // senha errada
-      else if (e.code == 'wrong-password') {
-        wrongPasswordMessage();
-      }
+      Get.snackbar('error msg', e.code);
+    } catch(e){
+      Get.snackbar('error msg', e.toString());
     }
+    setState(() {
+      isloading = true;
+    });
   }
 
   // Mensagem de erro de email popup
