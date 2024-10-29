@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
@@ -6,15 +8,15 @@ import '../../assets/components/image_style/square_tile.dart';
 import '../../assets/components/text_fields/text_fields_login.dart';
 import '../../assets/components/buttons/button_login.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const RegisterPage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   //controladores
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -22,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isloading = false;
 
   //Método sign in usuário com email e senha
-  signUserIn() async {
+  signUserUp() async {
     setState(() {
       isloading = true;
     });
@@ -37,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     // Verificação de email e senha de login
-    // Try sign in
+    // Try criar usuário
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
@@ -84,22 +86,31 @@ class _LoginPageState extends State<LoginPage> {
               //Alinhar ao centro da página
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 25),
                 //Icon principal
                 const Icon(
                   Icons.lock,
-                  size: 100,
+                  size: 50,
                 ),
                 const SizedBox(
-                  height: 50,
+                  height: 25,
                 ),
-                //Texto de boas vindas
+                //Texto de criar nova conta
                 Text(
-                  "Bem vindo de volta",
+                  "Vamos criar uma conta para você!",
                   style: TextStyle(color: Colors.grey[700], fontSize: 16),
                 ),
                 const SizedBox(
                   height: 25,
+                ),
+                //TextFields para nome
+                Textfields(
+                  controller: emailController,
+                  hintText: "Nome",
+                  obscureText: false,
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 //TextFields para email
                 Textfields(
@@ -114,6 +125,15 @@ class _LoginPageState extends State<LoginPage> {
                 Textfields(
                   controller: passwordController,
                   hintText: "Senha",
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                //TextFields para Confirmar senha
+                Textfields(
+                  controller: passwordController,
+                  hintText: "Confirmar senha",
                   obscureText: true,
                 ),
                 const SizedBox(
@@ -137,10 +157,10 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 25,
                 ),
-                //Sign in button
+                //Sign up button
                 Button_login(
-                  text: "Sign In",
-                  onTap: signUserIn,
+                  text: "Sign Up",
+                  onTap: signUserUp,
                 ),
 
                 const SizedBox(
@@ -190,12 +210,12 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 25,
                 ),
-                //Não possui conta? Registre-se
+                //Já possui conta? Faça login
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Não tem conta?",
+                      "Já possui uma conta?",
                       style: TextStyle(
                         color: Colors.grey[700],
                       ),
@@ -204,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
                     GestureDetector(
                       onTap: widget.onTap,
                       child: const Text(
-                        "Registre-se",
+                        "Faça Login",
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.bold),
                       ),
