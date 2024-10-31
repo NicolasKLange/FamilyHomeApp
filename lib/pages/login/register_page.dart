@@ -18,56 +18,72 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   //controladores
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  // Variáveis para mostrar/ocultar senha
+  bool isPasswordVisible = false;
+  bool isConfirmPasswordVisible = false;
 
   bool isloading = false;
 
-  //Método sign in usuário com email e senha
-  signUserUp() async {
-    setState(() {
-      isloading = true;
-    });
-    //Circulo de carregando
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
+// Método sign in usuário com email e senha
+signUserUp() async {
+  // Circulo de carregando
+  showDialog(
+    context: context,
+    builder: (context) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    },
+  );
 
-    // Verificação de email e senha de login
-    // Try criar usuário
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-      // Pop circulo carregando
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      // Pop circulo carregando
-      Navigator.pop(context);
-      // Email errado
-      showErrorMessage(e.code);
-    } catch (e) {
-      Get.snackbar('Erro', e.toString());
+  // Verificação de senha
+  try {
+    // Verificar se a senha possui no mínimo 6 caracteres
+    if (passwordController.text.length < 6) {
+      Navigator.pop(context); // Fechar o carregando antes do erro
+      showErrorMessage('A senha deve ter no mínimo 6 caracteres');
+      return;
     }
-    setState(() {
-      isloading = true;
-    });
+    
+    // Verificar se as senhas coincidem
+    if (passwordController.text == confirmPasswordController.text) {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text, 
+        password: passwordController.text
+      );
+      Navigator.pop(context); // Fechar o carregando apenas se bem-sucedido
+    } else {
+      Navigator.pop(context); // Fechar o carregando antes do erro
+      showErrorMessage('Senhas não coincidem');
+    }
+  } on FirebaseAuthException catch (e) {
+    Navigator.pop(context); // Fechar o carregando em caso de erro
+    showErrorMessage(e.message ?? 'Erro desconhecido');
+  } catch (e) {
+    Navigator.pop(context); // Fechar o carregando em caso de erro genérico
+    showErrorMessage(e.toString());
   }
+}
+
+
 
   // Mensagem de erro de email popup
-  void showErrorMessage(String Message) {
+  void showErrorMessage(String message) {
     showDialog(
       context: context,
       builder: (context) {
-        return const AlertDialog(
+        return AlertDialog(
           backgroundColor: Colors.blue,
-          title: Text(
-            'Verifique email ou senha',
-            style: TextStyle(color: Colors.white),
+          title: Center(
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         );
       },
@@ -105,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 //TextFields para nome
                 Textfields(
-                  controller: emailController,
+                  controller: nameController,
                   hintText: "Nome",
                   obscureText: false,
                 ),
@@ -126,38 +142,24 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: passwordController,
                   hintText: "Senha",
                   obscureText: true,
-                ),
+                ),             
                 const SizedBox(
                   height: 10,
                 ),
                 //TextFields para Confirmar senha
                 Textfields(
-                  controller: passwordController,
+                  controller: confirmPasswordController,
                   hintText: "Confirmar senha",
                   obscureText: true,
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                //Esqueceu a senha
-                Padding(
-                  //Deixar com margem do lado
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    //Desixar no fim da linha
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "Esqueceu a senha?",
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                ),
+                
                 const SizedBox(
                   height: 25,
                 ),
-                //Sign up button
+                //Sign up buttonR
                 Button_login(
                   text: "Sign Up",
                   onTap: signUserUp,
