@@ -1,3 +1,4 @@
+import 'package:family_home_app/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
@@ -180,13 +181,21 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 25,
                 ),
+
+
                 //SignIn com google
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SquareTile(imagePath: 'lib/assets/images/signInGoogle.png'),
+                    SquareTile(
+                      onTap: () => AuthService().signInWithGoogle(),
+                      imagePath: 'lib/assets/images/signInGoogle.png'
+                      ),
                   ],
                 ),
+
+
+
                 const SizedBox(
                   height: 25,
                 ),

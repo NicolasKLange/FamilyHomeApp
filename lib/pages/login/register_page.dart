@@ -1,3 +1,4 @@
+import 'package:family_home_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -203,10 +204,12 @@ signUserUp() async {
                   height: 25,
                 ),
                 //SignIn com google
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SquareTile(imagePath: 'lib/assets/images/signInGoogle.png'),
+                    SquareTile(
+                      onTap: () => AuthService().signInWithGoogle(),
+                      imagePath: 'lib/assets/images/signInGoogle.png'),
                   ],
                 ),
                 const SizedBox(
