@@ -162,7 +162,7 @@ signUserUp() async {
                   height: 25,
                 ),
                 //Sign up buttonR
-                Button_login(
+                ButtonLogin(
                   text: "Sign Up",
                   onTap: signUserUp,
                 ),

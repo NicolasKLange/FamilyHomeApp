@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
               //Alinhar ao centro da página
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 10),
                 //Icon principal
                 Image.asset(
                   'lib/assets/images/logoApp.png',
@@ -93,15 +93,18 @@ class _LoginPageState extends State<LoginPage> {
                   width: 150,
                 ),
                 const SizedBox(
-                  height: 50,
+                  height: 40,
                 ),
                 //Texto de boas vindas
                 const Text(
                   "Bem vindo de volta",
-                  style: TextStyle(color: Color(0xFFEDE8E8), fontSize: 20),
+                  style: TextStyle(
+                      color: Color(0xFFEDE8E8),
+                      fontSize: 25,
+                      fontWeight: FontWeight.w400),
                 ),
                 const SizedBox(
-                  height: 25,
+                  height: 30,
                 ),
                 //TextFields para email
                 Textfields(
@@ -110,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: false,
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 13,
                 ),
                 //TextFields para senha
                 Textfields(
@@ -119,19 +122,20 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 13,
                 ),
                 //Esqueceu a senha
                 const Padding(
                   //Deixar com margem do lado
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  padding: EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
                     //Desixar no fim da linha
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         "Esqueceu a senha?",
-                        style: TextStyle(color: Color(0xFFEDE8E8)),
+                        style:
+                            TextStyle(color: Color(0xFFEDE8E8), fontSize: 15),
                       ),
                     ],
                   ),
@@ -140,40 +144,38 @@ class _LoginPageState extends State<LoginPage> {
                   height: 25,
                 ),
                 //Sign in button
-                Button_login(
+                ButtonLogin(
                   text: "Sign In",
                   onTap: signUserIn,
                 ),
-
                 const SizedBox(
-                  height: 25,
+                  height: 30,
                 ),
                 //Divisor (linha para separar)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Divider(
                           thickness: 0.5,
                           color: Color(0xFFEDE8E8),
                         ),
                       ),
                       //Texto entre os divisores
-                      const Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 25.0),
                         child: Text(
                           "Ou tente fazer login com ",
                           style: TextStyle(
-                            color: Color(0xFFEDE8E8),
+                            color: Color(0xFFEDE8E8), fontSize: 15,
                           ),
                         ),
                       ),
-
                       Expanded(
                         child: Divider(
                           thickness: 0.5,
-                          color: Colors.grey[400],
+                          color: Color(0xFFEDE8E8),
                         ),
                       ),
                     ],
@@ -182,7 +184,6 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 25,
                 ),
-
                 //SignIn com google
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -192,7 +193,6 @@ class _LoginPageState extends State<LoginPage> {
                         imagePath: 'lib/assets/images/signInGoogle.png'),
                   ],
                 ),
-
                 const SizedBox(
                   height: 25,
                 ),
@@ -203,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                     const Text(
                       "Não tem conta?",
                       style: TextStyle(
-                        color: Color(0xFFEDE8E8),
+                        color: Color(0xFFEDE8E8), fontSize: 15,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -212,7 +212,9 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text(
                         "Registre-se",
                         style: TextStyle(
-                            color: Color(0xFF2B3649), fontWeight: FontWeight.bold, fontSize: 16),
+                            color: Color(0xFFEDE8E8),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
                     ),
                   ],

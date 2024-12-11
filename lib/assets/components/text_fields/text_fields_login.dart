@@ -29,33 +29,46 @@ class _TextfieldsState extends State<Textfields> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
-      child: TextField(
-        controller: widget.controller,
-        obscureText: isObscured,
-        decoration: InputDecoration(
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: const  Color(0xFF2B3649).withOpacity(0.5), // Cor da sombra (preto)
+              blurRadius: 10.0, // Suavidade da sombra
+              offset: const Offset(2, 7), // Deslocamento horizontal e vertical
+            ),
+          ],
+        ),
+        child: TextField(
+          controller: widget.controller,
+          obscureText: isObscured,
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.transparent), // Sem cor de borda
+              borderRadius: BorderRadius.circular(15.0)
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey.shade400), // Borda ao focar
+              borderRadius: BorderRadius.circular(15.0), // Arredondamento
+            ),
+            fillColor: const Color(0xFFA8BEE0),
+            filled: true,
+            hintText: widget.hintText,
+            hintStyle: const TextStyle(color: Color(0xFF577096)),
+            suffixIcon: widget.obscureText
+                ? IconButton(
+                    icon: Icon(
+                      isObscured ? Icons.visibility_off : Icons.visibility,
+                      color: const Color(0xFF577096),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isObscured = !isObscured;
+                      });
+                    },
+                  )
+                : null,
           ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400),
-          ),
-          fillColor: Colors.grey.shade200,
-          filled: true,
-          hintText: widget.hintText,
-          hintStyle: TextStyle(color: Colors.grey[500]),
-          suffixIcon: widget.obscureText
-              ? IconButton(
-                  icon: Icon(
-                    isObscured ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.grey[500],
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isObscured = !isObscured;
-                    });
-                  },
-                )
-              : null,
         ),
       ),
     );

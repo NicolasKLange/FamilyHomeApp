@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SquareTile extends StatelessWidget {
   final String imagePath;
@@ -24,7 +23,7 @@ class SquareTile extends StatelessWidget {
         ),
         child: Image.asset(
           imagePath,
-          height: 40,
+          height: 35,
         ),
       ),
     );
