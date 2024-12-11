@@ -17,14 +17,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp( // Substituir MaterialApp por GetMaterialApp
+    return const GetMaterialApp(
       title: 'Flutter Login',
       home: AuthPage(),
     );
   }
 }
-
-
-
-
-

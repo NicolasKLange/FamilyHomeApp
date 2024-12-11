@@ -1,66 +1,61 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import '../../assets/components/navigation_bar/customNavigationBar.dart';
+// Importando as telas
+import '../dashboard/dashboard.dart';
+import '../calendar/calendar.dart';
+import '../profile/profile.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
-  // Usuário atual
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
-
-  // Fazer sign out do email e senha apenas
-  void signUserOutWithEmailAndPassword() {
-    FirebaseAuth.instance.signOut();
-  }
-
-  // Método para esquecer a conta Google cadastrada
-  void forgetAccountWithGoogle() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-
-    try {
-      // Desconectar do Google, se estiver logado
-      if (await googleSignIn.isSignedIn()) {
-        await googleSignIn.signOut();
-      }
-      // Fazer o sign out do Firebase
-      await FirebaseAuth.instance.signOut();
-    } catch (e) {
-      // ignore: avoid_print
-      print("Erro ao deslogar: $e");
-    }
-  }
+  int _opcaoSelecionada = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          // Botão de logout (e-mail e senha)
-          IconButton(
-            onPressed: signUserOutWithEmailAndPassword,
-            icon: const Icon(Icons.logout_sharp),
-          ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        backgroundColor: const Color(0xFF577096), // Fundo vermelho no AppBar
+        title: Row(
           children: [
-            Text("Logado como " + user.email!),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: forgetAccountWithGoogle,
-              child: Text(
-                "Esquecer e-mail cadastrado",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 16,
-                  decoration: TextDecoration.underline, // Adiciona sublinhado
-                ),
-              ),
+            Image.asset(
+              'lib/assets/images/logoApp.png', // Caminho da imagem do logotipo
+              height: 40, // Altura do logotipo
+            ),
+            const SizedBox(width: 10), // Espaçamento entre o logotipo e o texto
+            const Text(
+              "Family Home",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFEDE8E8),),
+            ),
+            const Spacer(), // Empurra o e-mail para o lado direito
+            Text(
+              user.email!,
+              style: const TextStyle(fontSize: 16, color: Color(0xFFEDE8E8),),
             ),
           ],
         ),
+      ),
+      body: IndexedStack(
+        index: _opcaoSelecionada,
+        children: const <Widget>[
+          DashboardScreen(),
+          CalendarScreen(),
+          ProfileScreen(),
+        ],
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        selectedIndex: _opcaoSelecionada,
+        onDestinationSelected: (int index) {
+          setState(() {
+            _opcaoSelecionada = index;
+          });
+        },
       ),
     );
   }

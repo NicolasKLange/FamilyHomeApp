@@ -1,6 +1,5 @@
 import 'package:family_home_app/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../assets/components/image_style/square_tile.dart';
@@ -27,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       isloading = true;
     });
-    //Circulo de carregando
+    //Circulo de carrega
     showDialog(
       context: context,
       builder: (context) {
