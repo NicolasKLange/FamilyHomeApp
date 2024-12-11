@@ -94,7 +94,7 @@ signUserUp() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: const Color(0xFF577096),
       body: SafeArea(
         child: Center(
           //Permitir o scroll da página
@@ -105,9 +105,10 @@ signUserUp() async {
               children: [
                 const SizedBox(height: 25),
                 //Icon principal
-                const Icon(
-                  Icons.lock,
-                  size: 50,
+                Image.asset(
+                  'lib/assets/images/logoApp.png',
+                  height: 100,
+                  width: 100,
                 ),
                 const SizedBox(
                   height: 25,

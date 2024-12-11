@@ -25,6 +25,7 @@ dependencies:
   path_provider: ^2.1.4
   get: ^4.6.6
   google_sign_in: ^6.2.1
+  firebase_storage: ^12.3.4
 
 dev_dependencies:
   flutter_test:
@@ -35,5 +36,5 @@ flutter:
   uses-material-design: true
 
   assets:
-    - lib/assets/images/logo.png
+    - lib/assets/images/logoApp.png
     - lib/assets/images/signInGoogle.png

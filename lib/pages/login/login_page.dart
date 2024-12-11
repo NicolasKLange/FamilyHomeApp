@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: const Color(0xFF577096),
       body: SafeArea(
         child: Center(
           //Permitir o scroll da página
@@ -87,17 +87,18 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const SizedBox(height: 50),
                 //Icon principal
-                const Icon(
-                  Icons.lock,
-                  size: 100,
+                Image.asset(
+                  'lib/assets/images/logoApp.png',
+                  height: 150,
+                  width: 150,
                 ),
                 const SizedBox(
                   height: 50,
                 ),
                 //Texto de boas vindas
-                Text(
+                const Text(
                   "Bem vindo de volta",
-                  style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                  style: TextStyle(color: Color(0xFFEDE8E8), fontSize: 20),
                 ),
                 const SizedBox(
                   height: 25,
@@ -121,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 10,
                 ),
                 //Esqueceu a senha
-                Padding(
+                const Padding(
                   //Deixar com margem do lado
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
@@ -130,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Text(
                         "Esqueceu a senha?",
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: Color(0xFFEDE8E8)),
                       ),
                     ],
                   ),
@@ -152,19 +153,19 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: Divider(
                           thickness: 0.5,
-                          color: Colors.grey[400],
+                          color: Color(0xFFEDE8E8),
                         ),
                       ),
                       //Texto entre os divisores
-                      Padding(
+                      const Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: Text(
-                          "Ou tente fazer login com",
+                          "Ou tente fazer login com ",
                           style: TextStyle(
-                            color: Colors.grey[700],
+                            color: Color(0xFFEDE8E8),
                           ),
                         ),
                       ),
@@ -182,19 +183,15 @@ class _LoginPageState extends State<LoginPage> {
                   height: 25,
                 ),
 
-
                 //SignIn com google
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SquareTile(
-                      onTap: () => AuthService().signInWithGoogle(),
-                      imagePath: 'lib/assets/images/signInGoogle.png'
-                      ),
+                        onTap: () => AuthService().signInWithGoogle(),
+                        imagePath: 'lib/assets/images/signInGoogle.png'),
                   ],
                 ),
-
-
 
                 const SizedBox(
                   height: 25,
@@ -203,10 +200,10 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "Não tem conta?",
                       style: TextStyle(
-                        color: Colors.grey[700],
+                        color: Color(0xFFEDE8E8),
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -215,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text(
                         "Registre-se",
                         style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.bold),
+                            color: Color(0xFF2B3649), fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ),
                   ],
