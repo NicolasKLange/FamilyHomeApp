@@ -29,11 +29,12 @@ class _HomePageState extends State<HomePage> {
               height: 40, // Altura do logotipo
             ),
             const SizedBox(width: 10), // Espaçamento entre o logotipo e o texto
-            const Text(
-              "Family Home",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFEDE8E8),),
-            ),
-            const Spacer(), // Empurra o e-mail para o lado direito
+            // const Text(
+            //   "Family Home",
+            //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFEDE8E8),),
+            // ),
+            
+            // Colocar o email do usuario(Futuramente colocar nome de usuário cadastrado)
             Text(
               user.email!,
               style: const TextStyle(fontSize: 16, color: Color(0xFFEDE8E8),),

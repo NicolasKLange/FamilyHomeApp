@@ -107,26 +107,26 @@ signUserUp() async {
                 //Icon principal
                 Image.asset(
                   'lib/assets/images/logoApp.png',
-                  height: 100,
-                  width: 100,
+                  height: 150,
+                  width: 150,
                 ),
                 const SizedBox(
                   height: 25,
                 ),
                 //Texto de criar nova conta
-                Text(
+                const Text(
                   "Vamos criar uma conta para você!",
-                  style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                  style: TextStyle(color: Color(0xFFEDE8E8), fontSize: 20, fontWeight: FontWeight.w400),
                 ),
                 const SizedBox(
                   height: 25,
                 ),
-                //TextFields para nome
-                Textfields(
-                  controller: nameController,
-                  hintText: "Nome",
-                  obscureText: false,
-                ),
+                // //TextFields para nome
+                // Textfields(
+                //   controller: nameController,
+                //   hintText: "Nome",
+                //   obscureText: false,
+                // ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -182,12 +182,12 @@ signUserUp() async {
                         ),
                       ),
                       //Texto entre os divisores
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 25.0),
                         child: Text(
                           "Ou tente fazer login com",
                           style: TextStyle(
-                            color: Colors.grey[700],
+                            color: Color(0xFFEDE8E8), fontSize: 15,
                           ),
                         ),
                       ),
@@ -220,10 +220,10 @@ signUserUp() async {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "Já possui uma conta?",
                       style: TextStyle(
-                        color: Colors.grey[700],
+                        color: Color(0xFFEDE8E8),fontSize: 15,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -232,7 +232,7 @@ signUserUp() async {
                       child: const Text(
                         "Faça Login",
                         style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.bold),
+                           color: Color(0xFFEDE8E8), fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ),
                   ],
