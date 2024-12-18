@@ -33,11 +33,14 @@ class _HomePageState extends State<HomePage> {
             //   "Family Home",
             //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFEDE8E8),),
             // ),
-            
+
             // Colocar o email do usuario(Futuramente colocar nome de usuário cadastrado)
             Text(
               user.email!,
-              style: const TextStyle(fontSize: 16, color: Color(0xFFEDE8E8),),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Color(0xFFEDE8E8),
+              ),
             ),
           ],
         ),
@@ -49,6 +52,10 @@ class _HomePageState extends State<HomePage> {
           CalendarScreen(),
           ProfileScreen(),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: _opcaoSelecionada,
