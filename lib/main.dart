@@ -1,3 +1,6 @@
+import 'package:family_home_app/pages/services/supermarket/supermarket.dart';
+import 'package:family_home_app/testeFirebase/employee.dart';
+import 'package:family_home_app/testeFirebase/listEmployes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -17,9 +20,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
+    return GetMaterialApp(
       title: 'Family Home',
-      home: AuthPage(),
+      
+      initialRoute: 'authPage',
+      routes: {
+        'authPage': (context) => const AuthPage(),
+        'listEmployeeScreen': (context) => ListEmployes(),
+        'supermarket': (context) => Supermarket(),
+      },
     );
   }
 }
