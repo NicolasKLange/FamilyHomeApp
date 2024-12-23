@@ -1,4 +1,3 @@
-import 'package:family_home_app/testeFirebase/employee.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../assets/components/navigation_bar/customNavigationBar.dart';
@@ -6,6 +5,7 @@ import '../../assets/components/navigation_bar/customNavigationBar.dart';
 import '../dashboard/dashboard.dart';
 import '../calendar/calendar.dart';
 import '../profile/profile.dart';
+import '../../testeFirebase/listEmployes.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Employee(),
+              builder: (context) => ListEmployes(),
             ),
           );
         },
@@ -76,3 +76,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+

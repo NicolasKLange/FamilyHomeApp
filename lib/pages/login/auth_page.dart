@@ -1,4 +1,3 @@
-import 'package:family_home_app/pages/login/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../home/home_page.dart';
@@ -20,7 +19,7 @@ class AuthPage extends StatelessWidget {
           }
           // Usuário não logado
           else {
-            return LoginOrRegisterPage();
+            return const LoginOrRegisterPage();
           }
         },
       ),
