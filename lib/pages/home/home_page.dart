@@ -1,12 +1,9 @@
-import 'package:family_home_app/pages/services/supermarket/supermarket.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../assets/components/navigation_bar/customNavigationBar.dart';
 // Importando as telas
 import '../calendar/calendar.dart';
 import '../profile/profile.dart';
-import '../../testeFirebase/listEmployes.dart';
-import '../../testeFirebase/employee.dart'; // Certifique-se de que essa importação aponta para a tela correta
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,8 +19,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //Cor de fundo azul em toda a tela
-      backgroundColor:const  Color(0xFFA8BEE0), // Aqui definimos o fundo azul para toda a tela
+      backgroundColor: const Color(0xFFA8BEE0),
 
       //AppBar com logo e email do login
       appBar: AppBar(
@@ -72,32 +68,45 @@ class _HomePageState extends State<HomePage> {
 class FuncionalidadesScreen extends StatelessWidget {
   const FuncionalidadesScreen({super.key});
 
-  Widget buildSquare(BuildContext context, String title, Color color, Widget destination) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => destination,
+  Widget _buildDashboardButton(
+      BuildContext context, String title, IconData icon, String route) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFEDE8E8),
+        borderRadius: BorderRadius.circular(15.0),
+        border: Border.all(color: const Color(0xFF2B3649), width: 2),
+        //COLOCANDO SOMBRA PARA PARECER FLUTURAR
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2B3649).withOpacity(0.4),
+            spreadRadius: 2,
+            blurRadius: 10,
           ),
-        );
-      },
-      child: Container(
-        height: 100,
-        width: 100,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Center(
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+        ],
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, route);
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 50,
+              color: const Color(0xFF2B3649),
             ),
-          ),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -105,48 +114,39 @@ class FuncionalidadesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 30),
-              child: Text(
-                'Funcionalidades',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(bottom: 10, top: 20),
+            child: Text(
+              'Funcionalidades',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          ),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+                crossAxisSpacing: 18,
+                mainAxisSpacing: 18,
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(30),
+                childAspectRatio: 1,
               children: [
-                buildSquare(context, 'Funcionário', Colors.blue, ListEmployes()),
-                const SizedBox(width: 20),
-                buildSquare(context, 'Compras', Colors.green, Supermarket()),
+                _buildDashboardButton(context, 'Funcionário', Icons.person, '/listEmployes'),
+                _buildDashboardButton(context, 'Compras', Icons.shopping_cart, '/supermarket'),
               ],
             ),
-          ],
-        ),
-    );
-  }
-}
-
-class CustomScreenHeader extends StatelessWidget {
-  final Widget child;
-
-  const CustomScreenHeader({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          child, // Aqui está o conteúdo do header
+          ),
         ],
       ),
     );
   }
 }
+
