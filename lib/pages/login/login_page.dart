@@ -56,19 +56,16 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  // Mensagem de erro de email popup
-  void showErrorMessage(String Message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const AlertDialog(
-          backgroundColor: Colors.blue,
-          title: Text(
-            'Verifique email ou senha',
-            style: TextStyle(color: Colors.white),
-          ),
-        );
-      },
+  // Mensagem de erro no topo da tela
+  void showErrorMessage(String message) {
+    Get.snackbar(
+      'Erro de Login', // Título
+      'Verifique seu email ou senha', // Mensagem
+      backgroundColor: const  Color(0xFF2B3649),
+      colorText: const Color(0xFFEDE8E8),
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.all(8.0),
+      duration: const Duration(seconds: 3),
     );
   }
 
@@ -167,7 +164,8 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           "Ou tente fazer login com ",
                           style: TextStyle(
-                            color: Color(0xFFEDE8E8), fontSize: 15,
+                            color: Color(0xFFEDE8E8),
+                            fontSize: 15,
                           ),
                         ),
                       ),
@@ -202,7 +200,8 @@ class _LoginPageState extends State<LoginPage> {
                     const Text(
                       "Não tem conta?",
                       style: TextStyle(
-                        color: Color(0xFFEDE8E8), fontSize: 15,
+                        color: Color(0xFFEDE8E8),
+                        fontSize: 15,
                       ),
                     ),
                     const SizedBox(width: 4),
