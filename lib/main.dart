@@ -1,5 +1,5 @@
 import 'package:family_home_app/pages/services/supermarket/supermarket.dart';
-import 'package:family_home_app/testeFirebase/listEmployes.dart';
+import 'package:family_home_app/testeFirebase/listEmployee.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       initialRoute: 'authPage',
       routes: {
         'authPage': (context) => const AuthPage(),
-        '/listEmployes': (context) => const ListEmployes(),
+        '/listEmployes': (context) => const ListEmployee(),
         '/supermarket': (context) => const Supermarket(),
       },
     );
