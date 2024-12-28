@@ -49,12 +49,18 @@ class _ListEmployeeState extends State<ListEmployee> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Name : ' + ds['Name'],
-                                style: const TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Name : ' + ds['Name'],
+                                    style: const TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Icon(Icons.edit, color: Colors.orange,),
+                                ],
                               ),
                               Text(
                                 'Age : ' + ds['Age'],

@@ -6,6 +6,8 @@ import 'firebase_options.dart';
 import 'pages/login/auth_page.dart';
 import 'package:get/get.dart';
 
+import 'testeToDoList/homeToDoList.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -26,6 +28,7 @@ class MyApp extends StatelessWidget {
         'authPage': (context) => const AuthPage(),
         '/listEmployes': (context) => const ListEmployee(),
         '/supermarket': (context) => const Supermarket(),
+        '/toDoList': (context) => const HomeToDoList(),
       },
     );
   }

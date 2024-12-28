@@ -141,6 +141,7 @@ class FuncionalidadesScreen extends StatelessWidget {
               children: [
                 _buildDashboardButton(context, 'Funcionário', Icons.person, '/listEmployes'),
                 _buildDashboardButton(context, 'Compras', Icons.shopping_cart, '/supermarket'),
+                _buildDashboardButton(context, 'Tarefas', Icons.list, '/toDoList'),
               ],
             ),
           ),
