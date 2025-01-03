@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
 import 'databaseShopping/database.dart';
 
-class Supermarket extends StatefulWidget {
-  const Supermarket({super.key});
+class Pharmacy extends StatefulWidget {
+  const Pharmacy({super.key});
 
   @override
-  State<Supermarket> createState() => _SupermarketState();
+  State<Pharmacy> createState() => _PharmacyState();
 }
 
-class _SupermarketState extends State<Supermarket> {
+class _PharmacyState extends State<Pharmacy> {
   Stream? todoStream;
   final user = FirebaseAuth.instance.currentUser!;
 
   getontheload() async {
     todoStream =
-        await ShoppingDatabaseMethods().getalltheProducts('Supermarket');
+        await ShoppingDatabaseMethods().getalltheProducts('Pharmacy');
     setState(() {});
   }
 
@@ -62,7 +62,7 @@ class _SupermarketState extends State<Supermarket> {
                         value: ds['Yes'],
                         onChanged: (newValue) async {
                           await ShoppingDatabaseMethods()
-                              .updateifTicked(ds['Id'], 'Supermarket');
+                              .updateifTicked(ds['Id'], 'Pharmacy');
                           setState(() {});
                         },
                         controlAffinity: ListTileControlAffinity.leading,
@@ -83,10 +83,9 @@ class _SupermarketState extends State<Supermarket> {
         onPressed: () {
           openBox();
         },
-        backgroundColor: const Color(0xFF577096),
         child: const Icon(
           Icons.add,
-          color:  Color(0xFFEDE8E8),
+          color: Color(0xFF249FFF),
           size: 30.0,
         ),
       ),
@@ -137,7 +136,7 @@ class _SupermarketState extends State<Supermarket> {
                   width: 30.0,
                 ),
                 const Text(
-                  'Mercado',
+                  'Farmácia',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -224,7 +223,7 @@ class _SupermarketState extends State<Supermarket> {
                           'Yes': false,
                         };
                         ShoppingDatabaseMethods()
-                            .addSupermarketProduct(userTodo, id);
+                            .addPharmacyProduct(userTodo, id);
                         Navigator.pop(context);
                       },
                       child: Center(

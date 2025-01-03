@@ -140,9 +140,8 @@ class FuncionalidadesScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(30),
                 childAspectRatio: 1,
               children: [
-                _buildDashboardButton(context, 'Funcionário', Icons.person, '/listEmployes'),
                 _buildDashboardButton(context, 'Compras', Icons.shopping_cart, '/shopping'),
-                _buildDashboardButton(context, 'Tarefas', Icons.list, '/toDoList'),
+                _buildDashboardButton(context, 'Funcionário', Icons.person, '/listEmployes'),
                 _buildDashboardButton(context, 'Tasks', Icons.list, '/tasksList'),
               ],
             ),

@@ -1,5 +1,8 @@
 import 'package:family_home_app/pages/home/home_page.dart';
+import 'package:family_home_app/pages/services/shopping/clothes.dart';
 import 'package:family_home_app/pages/services/shopping/dashboardShopping.dart';
+import 'package:family_home_app/pages/services/shopping/pharmacy.dart';
+import 'package:family_home_app/pages/services/shopping/school.dart';
 import 'package:family_home_app/pages/services/tasksList/tasksList.dart';
 import 'package:family_home_app/testeFirebase/listEmployee.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +36,10 @@ class MyApp extends StatelessWidget {
         '/toDoList': (context) => const HomeToDoList(),
         '/tasksList': (context) => const TasksList(),
         '/homePage': (context) => const HomePage(),
-        '/supermarket': (context) => Supermarket(),
+        '/supermarket': (context) => const Supermarket(),
+        '/pharmacy': (context) => const Pharmacy(),
+        '/clothes': (context) => const Clothes(),
+        '/school': (context) => const School(),
       },
     );
   }

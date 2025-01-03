@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
 import 'databaseShopping/database.dart';
 
-class Supermarket extends StatefulWidget {
-  const Supermarket({super.key});
+class Clothes extends StatefulWidget {
+  const Clothes({super.key});
 
   @override
-  State<Supermarket> createState() => _SupermarketState();
+  State<Clothes> createState() => _ClothesState();
 }
 
-class _SupermarketState extends State<Supermarket> {
+class _ClothesState extends State<Clothes> {
   Stream? todoStream;
   final user = FirebaseAuth.instance.currentUser!;
 
   getontheload() async {
     todoStream =
-        await ShoppingDatabaseMethods().getalltheProducts('Supermarket');
+        await ShoppingDatabaseMethods().getalltheProducts('Clothes');
     setState(() {});
   }
 
@@ -55,14 +55,14 @@ class _SupermarketState extends State<Supermarket> {
                         title: Text(
                           ds['Product'],
                           style: const TextStyle(
-                              color:  Color(0xFF2B3649),
+                              color: const Color(0xFF2B3649),
                               fontSize: 20,
                               fontWeight: FontWeight.w400),
                         ),
                         value: ds['Yes'],
                         onChanged: (newValue) async {
                           await ShoppingDatabaseMethods()
-                              .updateifTicked(ds['Id'], 'Supermarket');
+                              .updateifTicked(ds['Id'], 'Clothes');
                           setState(() {});
                         },
                         controlAffinity: ListTileControlAffinity.leading,
@@ -83,10 +83,9 @@ class _SupermarketState extends State<Supermarket> {
         onPressed: () {
           openBox();
         },
-        backgroundColor: const Color(0xFF577096),
         child: const Icon(
           Icons.add,
-          color:  Color(0xFFEDE8E8),
+          color: Color(0xFF249FFF),
           size: 30.0,
         ),
       ),
@@ -137,7 +136,7 @@ class _SupermarketState extends State<Supermarket> {
                   width: 30.0,
                 ),
                 const Text(
-                  'Mercado',
+                  'Roupas',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -160,7 +159,7 @@ class _SupermarketState extends State<Supermarket> {
     );
   }
 
-  Future openBox() => showDialog(
+ Future openBox() => showDialog(
       context: context,
       builder: (context) => AlertDialog(
             content: SingleChildScrollView(
@@ -224,7 +223,7 @@ class _SupermarketState extends State<Supermarket> {
                           'Yes': false,
                         };
                         ShoppingDatabaseMethods()
-                            .addSupermarketProduct(userTodo, id);
+                            .addClothesProduct(userTodo, id);
                         Navigator.pop(context);
                       },
                       child: Center(
