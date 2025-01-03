@@ -16,8 +16,7 @@ class _PharmacyState extends State<Pharmacy> {
   final user = FirebaseAuth.instance.currentUser!;
 
   getontheload() async {
-    todoStream =
-        await ShoppingDatabaseMethods().getalltheProducts('Pharmacy');
+    todoStream = await ShoppingDatabaseMethods().getalltheProducts('Pharmacy');
     setState(() {});
   }
 
@@ -55,7 +54,7 @@ class _PharmacyState extends State<Pharmacy> {
                         title: Text(
                           ds['Product'],
                           style: const TextStyle(
-                              color:  Color(0xFF2B3649),
+                              color: Color(0xFF2B3649),
                               fontSize: 20,
                               fontWeight: FontWeight.w400),
                         ),
@@ -83,9 +82,10 @@ class _PharmacyState extends State<Pharmacy> {
         onPressed: () {
           openBox();
         },
+        backgroundColor: const Color(0xFF577096),
         child: const Icon(
           Icons.add,
-          color: Color(0xFF249FFF),
+          color: Color(0xFFEDE8E8),
           size: 30.0,
         ),
       ),
@@ -108,14 +108,17 @@ class _PharmacyState extends State<Pharmacy> {
             ),
           ],
         ),
+        automaticallyImplyLeading:
+            false, // Remove o botão de voltar automaticamente
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin: const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
+            margin:
+                const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
             padding:
-               const EdgeInsets.only(bottom: 10, top: 10, right: 40, left: 60),
+                const EdgeInsets.only(bottom: 10, top: 10, left: 30),
             decoration: BoxDecoration(
               color: const Color(0xFFEDE8E8),
               borderRadius: BorderRadius.circular(10),
@@ -133,7 +136,7 @@ class _PharmacyState extends State<Pharmacy> {
                   child: const Icon(Icons.arrow_back),
                 ),
                 const SizedBox(
-                  width: 30.0,
+                  width: 55.0,
                 ),
                 const Text(
                   'Farmácia',
@@ -173,8 +176,10 @@ class _PharmacyState extends State<Pharmacy> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: const Icon(Icons.cancel, color: Color(0xFF577096),),
-                          
+                          child: const Icon(
+                            Icons.cancel,
+                            color: Color(0xFF577096),
+                          ),
                         ),
                         const SizedBox(
                           width: 25.0,
@@ -183,7 +188,8 @@ class _PharmacyState extends State<Pharmacy> {
                           'Adicionar Produto',
                           style: TextStyle(
                               color: Color(0xFF2B3649),
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
                         ),
                       ],
                     ),
@@ -237,7 +243,10 @@ class _PharmacyState extends State<Pharmacy> {
                           child: const Center(
                               child: Text(
                             'Adicionar',
-                            style: TextStyle(color: Color(0xFFEDE8E8), fontSize: 15,fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: Color(0xFFEDE8E8),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           )),
                         ),
                       ),

@@ -16,8 +16,7 @@ class _ClothesState extends State<Clothes> {
   final user = FirebaseAuth.instance.currentUser!;
 
   getontheload() async {
-    todoStream =
-        await ShoppingDatabaseMethods().getalltheProducts('Clothes');
+    todoStream = await ShoppingDatabaseMethods().getalltheProducts('Clothes');
     setState(() {});
   }
 
@@ -83,9 +82,10 @@ class _ClothesState extends State<Clothes> {
         onPressed: () {
           openBox();
         },
+        backgroundColor: const Color(0xFF577096),
         child: const Icon(
           Icons.add,
-          color: Color(0xFF249FFF),
+          color: Color(0xFFEDE8E8),
           size: 30.0,
         ),
       ),
@@ -108,14 +108,17 @@ class _ClothesState extends State<Clothes> {
             ),
           ],
         ),
+        automaticallyImplyLeading:
+            false, // Remove o botão de voltar automaticamente
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin: const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
+            margin:
+                const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
             padding:
-               const EdgeInsets.only(bottom: 10, top: 10, right: 40, left: 60),
+                const EdgeInsets.only(bottom: 10, top: 10, left: 30),
             decoration: BoxDecoration(
               color: const Color(0xFFEDE8E8),
               borderRadius: BorderRadius.circular(10),
@@ -133,7 +136,7 @@ class _ClothesState extends State<Clothes> {
                   child: const Icon(Icons.arrow_back),
                 ),
                 const SizedBox(
-                  width: 30.0,
+                  width: 70.0,
                 ),
                 const Text(
                   'Roupas',
@@ -159,7 +162,7 @@ class _ClothesState extends State<Clothes> {
     );
   }
 
- Future openBox() => showDialog(
+  Future openBox() => showDialog(
       context: context,
       builder: (context) => AlertDialog(
             content: SingleChildScrollView(
@@ -173,8 +176,10 @@ class _ClothesState extends State<Clothes> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: const Icon(Icons.cancel, color: Color(0xFF577096),),
-                          
+                          child: const Icon(
+                            Icons.cancel,
+                            color: Color(0xFF577096),
+                          ),
                         ),
                         const SizedBox(
                           width: 25.0,
@@ -183,7 +188,8 @@ class _ClothesState extends State<Clothes> {
                           'Adicionar Produto',
                           style: TextStyle(
                               color: Color(0xFF2B3649),
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
                         ),
                       ],
                     ),
@@ -237,7 +243,10 @@ class _ClothesState extends State<Clothes> {
                           child: const Center(
                               child: Text(
                             'Adicionar',
-                            style: TextStyle(color: Color(0xFFEDE8E8), fontSize: 15,fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: Color(0xFFEDE8E8),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           )),
                         ),
                       ),
