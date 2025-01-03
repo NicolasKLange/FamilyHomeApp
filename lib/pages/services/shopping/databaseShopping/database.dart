@@ -34,4 +34,6 @@ class ShoppingDatabaseMethods {
         .doc(id) // Documento do produto
         .update({'Yes': true}); // Atualiza o campo 'Yes'
   }
+
+  //Remover lista de produtos
 }
