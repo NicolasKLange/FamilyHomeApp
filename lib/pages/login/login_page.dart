@@ -1,4 +1,4 @@
-import 'package:family_home_app/services/auth_services.dart';
+import 'package:family_home_app/servicesAuth/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';

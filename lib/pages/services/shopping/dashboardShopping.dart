@@ -1,18 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../assets/components/navigation_bar/customNavigationBar.dart';
-// Importando as telas
-import '../calendar/calendar.dart';
-import '../profile/profile.dart';
+import '../../../assets/components/navigation_bar/customNavigationBar.dart';
+import '../../calendar/calendar.dart';
+import '../../profile/profile.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class Shopping extends StatefulWidget {
+  const Shopping({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Shopping> createState() => _ShoppingState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ShoppingState extends State<Shopping> {
   final user = FirebaseAuth.instance.currentUser!;
   int _opcaoSelecionada = 0;
 
@@ -41,12 +40,11 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-
       //Selecionar tela da NavigationBar
       body: IndexedStack(
         index: _opcaoSelecionada,
         children: const <Widget>[
-          FuncionalidadesScreen(),
+          ShoppingScreen(),
           CalendarScreen(),
           ProfileScreen(),
         ],
@@ -65,8 +63,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class FuncionalidadesScreen extends StatelessWidget {
-  const FuncionalidadesScreen({super.key});
+class ShoppingScreen extends StatelessWidget {
+  const ShoppingScreen({super.key});
 
   Widget _buildDashboardButton(
       BuildContext context, String title, IconData icon, String route) {
@@ -78,7 +76,6 @@ class FuncionalidadesScreen extends StatelessWidget {
         //COLOCANDO SOMBRA PARA PARECER FLUTURAR
         boxShadow: [
           BoxShadow(
-            // ignore: deprecated_member_use
             color: const Color(0xFF2B3649).withOpacity(0.4),
             spreadRadius: 2,
             blurRadius: 10,
@@ -123,7 +120,7 @@ class FuncionalidadesScreen extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.only(bottom: 10, top: 20),
             child: Text(
-              'Funcionalidades',
+              'Compras',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -140,10 +137,11 @@ class FuncionalidadesScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(30),
                 childAspectRatio: 1,
               children: [
-                _buildDashboardButton(context, 'Funcionário', Icons.person, '/listEmployes'),
-                _buildDashboardButton(context, 'Compras', Icons.shopping_cart, '/shopping'),
-                _buildDashboardButton(context, 'Tarefas', Icons.list, '/toDoList'),
-                _buildDashboardButton(context, 'Tasks', Icons.list, '/tasksList'),
+                _buildDashboardButton(context, 'Mercado', Icons.fastfood_rounded, '/supermarket'),
+                //_buildDashboardButton(context, 'Farmácia', Icons.local_pharmacy_rounded, '/pharmacy'),
+                //_buildDashboardButton(context, 'Roupas', Icons.store_mall_directory, '/clothes'),
+                //_buildDashboardButton(context, 'Escola', Icons.school_rounded, '/school'),
+                //_buildDashboardButton(context, 'Diversos', Icons.school_rounded, '/several'),
               ],
             ),
           ),

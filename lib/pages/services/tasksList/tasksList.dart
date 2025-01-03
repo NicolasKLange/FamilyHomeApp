@@ -97,7 +97,7 @@ class _TasksScreenState extends State<TasksScreen> {
                     icon: const Icon(Icons.arrow_back),
                     color: const Color(0xFF2B3649),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/homePage');
+                      Navigator.pop(context);
                     },
                   ),
                   const SizedBox(

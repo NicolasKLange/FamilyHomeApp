@@ -1,5 +1,5 @@
 import 'package:family_home_app/pages/home/home_page.dart';
-import 'package:family_home_app/pages/services/supermarket/supermarket.dart';
+import 'package:family_home_app/pages/services/shopping/dashboardShopping.dart';
 import 'package:family_home_app/pages/services/tasksList/tasksList.dart';
 import 'package:family_home_app/testeFirebase/listEmployee.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'pages/login/auth_page.dart';
 import 'package:get/get.dart';
+import 'pages/services/shopping/supermarket.dart';
 import 'testeToDoList/homeToDoList.dart';
 
 void main() async {
@@ -28,10 +29,11 @@ class MyApp extends StatelessWidget {
       routes: {
         'authPage': (context) => const AuthPage(),
         '/listEmployes': (context) => const ListEmployee(),
-        '/supermarket': (context) => const Supermarket(),
+        '/shopping': (context) => const Shopping(),
         '/toDoList': (context) => const HomeToDoList(),
         '/tasksList': (context) => const TasksList(),
         '/homePage': (context) => const HomePage(),
+        '/supermarket': (context) => Supermarket(),
       },
     );
   }
