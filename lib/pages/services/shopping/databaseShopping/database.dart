@@ -1,44 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ShoppingDatabaseMethods {
-  Future addSupermarketProduct(Map<String, dynamic> userShoppingMap, String id) async {
-    return await FirebaseFirestore.instance
-        .collection('Supermarket')
-        .doc(id)
-        .set(userShoppingMap);
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String userId = FirebaseAuth.instance.currentUser!.uid; // Obtém o UID do usuário autenticado
+
+  // Adicionar um produto a uma categoria específica
+  Future<void> addProduct(
+      String category, Map<String, dynamic> userShoppingMap, String id) async {
+    return await _firestore
+        .collection('ShoppingLists') // Coleção principal
+        .doc(userId) // Documento do usuário
+        .collection(category) // Subcoleção da categoria (Supermarket, Pharmacy, etc.)
+        .doc(id) // Documento do produto
+        .set(userShoppingMap); // Salva o produto
   }
 
-  Future addPharmacyProduct(Map<String, dynamic> userShoppingMap, String id) async {
-    return await FirebaseFirestore.instance
-        .collection('Pharmacy')
-        .doc(id)
-        .set(userShoppingMap);
+  // Obter produtos de uma categoria específica
+  Future<Stream<QuerySnapshot>> getProducts(String category) async {
+    return _firestore
+        .collection('ShoppingLists') // Coleção principal
+        .doc(userId) // Documento do usuário
+        .collection(category) // Subcoleção da categoria
+        .snapshots(); // Retorna os dados como stream
   }
 
-  Future addClothesProduct(Map<String, dynamic> userShoppingMap, String id) async {
-    return await FirebaseFirestore.instance
-        .collection('Clothes')
-        .doc(id)
-        .set(userShoppingMap);
-  }
-
-  Future addSchoolProduct(Map<String, dynamic> userShoppingMap, String id) async {
-    return await FirebaseFirestore.instance
-        .collection('School')
-        .doc(id)
-        .set(userShoppingMap);
-  }
-
-  //Coletar os dados do firebaseCloud
-  Future<Stream<QuerySnapshot>> getalltheProducts(String product) async {
-    return await FirebaseFirestore.instance.collection(product).snapshots();
-  }
-
-  //Função para marcar na checkbox
-  updateifTicked(String id, String product) async {
-    return await FirebaseFirestore.instance
-        .collection(product)
-        .doc(id)
-        .update({'Yes': true});
+  // Atualizar o status "Yes" de um produto
+  Future<void> updateIfTicked(String category, String id) async {
+    return await _firestore
+        .collection('ShoppingLists') // Coleção principal
+        .doc(userId) // Documento do usuário
+        .collection(category) // Subcoleção da categoria
+        .doc(id) // Documento do produto
+        .update({'Yes': true}); // Atualiza o campo 'Yes'
   }
 }

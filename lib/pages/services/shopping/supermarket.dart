@@ -14,10 +14,10 @@ class Supermarket extends StatefulWidget {
 class _SupermarketState extends State<Supermarket> {
   Stream? todoStream;
   final user = FirebaseAuth.instance.currentUser!;
+  final String category = "Supermarket"; // Define a categoria
 
   getontheload() async {
-    todoStream =
-        await ShoppingDatabaseMethods().getalltheProducts('Supermarket');
+    todoStream = await ShoppingDatabaseMethods().getProducts(category);
     setState(() {});
   }
 
@@ -62,7 +62,7 @@ class _SupermarketState extends State<Supermarket> {
                         value: ds['Yes'],
                         onChanged: (newValue) async {
                           await ShoppingDatabaseMethods()
-                              .updateifTicked(ds['Id'], 'Supermarket');
+                              .updateIfTicked(category, ds['Id']);
                           setState(() {});
                         },
                         controlAffinity: ListTileControlAffinity.leading,
@@ -74,7 +74,7 @@ class _SupermarketState extends State<Supermarket> {
     );
   }
 
-  TextEditingController todoController = new TextEditingController();
+  TextEditingController todoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -109,17 +109,15 @@ class _SupermarketState extends State<Supermarket> {
             ),
           ],
         ),
-        automaticallyImplyLeading:
-            false, // Remove o botão de voltar automaticamente
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin:
-                const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
-            padding:
-                const EdgeInsets.only(bottom: 10, top: 10, left: 30),
+            margin: const EdgeInsets.only(
+                right: 30, left: 30, top: 30, bottom: 10),
+            padding: const EdgeInsets.only(bottom: 10, top: 10, left: 30),
             decoration: BoxDecoration(
               color: const Color(0xFFEDE8E8),
               borderRadius: BorderRadius.circular(10),
@@ -230,7 +228,7 @@ class _SupermarketState extends State<Supermarket> {
                           'Yes': false,
                         };
                         ShoppingDatabaseMethods()
-                            .addSupermarketProduct(userTodo, id);
+                            .addProduct(category, userTodo, id);
                         Navigator.pop(context);
                       },
                       child: Center(

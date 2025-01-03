@@ -14,9 +14,10 @@ class Clothes extends StatefulWidget {
 class _ClothesState extends State<Clothes> {
   Stream? todoStream;
   final user = FirebaseAuth.instance.currentUser!;
+  final String category = "Clothes"; // Define a categoria
 
   getontheload() async {
-    todoStream = await ShoppingDatabaseMethods().getalltheProducts('Clothes');
+    todoStream = await ShoppingDatabaseMethods().getProducts(category);
     setState(() {});
   }
 
@@ -54,14 +55,14 @@ class _ClothesState extends State<Clothes> {
                         title: Text(
                           ds['Product'],
                           style: const TextStyle(
-                              color: const Color(0xFF2B3649),
+                              color: Color(0xFF2B3649),
                               fontSize: 20,
                               fontWeight: FontWeight.w400),
                         ),
                         value: ds['Yes'],
                         onChanged: (newValue) async {
                           await ShoppingDatabaseMethods()
-                              .updateifTicked(ds['Id'], 'Clothes');
+                              .updateIfTicked(category, ds['Id']);
                           setState(() {});
                         },
                         controlAffinity: ListTileControlAffinity.leading,
@@ -73,7 +74,7 @@ class _ClothesState extends State<Clothes> {
     );
   }
 
-  TextEditingController todoController = new TextEditingController();
+  TextEditingController todoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -108,17 +109,15 @@ class _ClothesState extends State<Clothes> {
             ),
           ],
         ),
-        automaticallyImplyLeading:
-            false, // Remove o botão de voltar automaticamente
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin:
-                const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
-            padding:
-                const EdgeInsets.only(bottom: 10, top: 10, left: 30),
+            margin: const EdgeInsets.only(
+                right: 30, left: 30, top: 30, bottom: 10),
+            padding: const EdgeInsets.only(bottom: 10, top: 10, left: 30),
             decoration: BoxDecoration(
               color: const Color(0xFFEDE8E8),
               borderRadius: BorderRadius.circular(10),
@@ -136,7 +135,7 @@ class _ClothesState extends State<Clothes> {
                   child: const Icon(Icons.arrow_back),
                 ),
                 const SizedBox(
-                  width: 70.0,
+                  width: 60.0,
                 ),
                 const Text(
                   'Roupas',
@@ -229,7 +228,7 @@ class _ClothesState extends State<Clothes> {
                           'Yes': false,
                         };
                         ShoppingDatabaseMethods()
-                            .addClothesProduct(userTodo, id);
+                            .addProduct(category, userTodo, id);
                         Navigator.pop(context);
                       },
                       child: Center(
