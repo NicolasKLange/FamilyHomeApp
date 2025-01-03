@@ -40,6 +40,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+        automaticallyImplyLeading:
+            false, // Remove o botão de voltar automaticamente
       ),
 
       //Selecionar tela da NavigationBar
