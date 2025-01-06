@@ -27,7 +27,7 @@ class _ClothesState extends State<Clothes> {
     super.initState();
   }
 
-  Widget allProduct() {
+   Widget allProduct() {
     return StreamBuilder(
       stream: todoStream,
       builder: (context, AsyncSnapshot snapshot) {
@@ -43,31 +43,70 @@ class _ClothesState extends State<Clothes> {
                     width: 2,
                   ),
                 ),
-                child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: snapshot.data.docs.length,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot ds = snapshot.data.docs[index];
-                      return CheckboxListTile(
-                        activeColor: const Color(0xFF279CFB),
-                        title: Text(
-                          ds['Product'],
-                          style: const TextStyle(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Lista',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Color(0xFF2B3649),
+                                fontWeight: FontWeight.bold),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              await ShoppingDatabaseMethods()
+                                  .deleteProductList(category);
+                              setState(() {
+                                todoStream =
+                                    null; // Limpa a lista após a exclusão
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Lista de compras excluída com sucesso!')),
+                              );
+                            },
+                            child: const Icon(
+                              Icons.cancel,
                               color: Color(0xFF2B3649),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        value: ds['Yes'],
-                        onChanged: (newValue) async {
-                          await ShoppingDatabaseMethods()
-                              .updateIfTicked(category, ds['Id']);
-                          setState(() {});
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
-                      );
-                    }),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: snapshot.data.docs.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot ds = snapshot.data.docs[index];
+                          return CheckboxListTile(
+                            activeColor: const Color(0xFF577096),
+                            title: Text(
+                              ds['Product'],
+                              style: const TextStyle(
+                                  color: Color(0xFF2B3649),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            value: ds['Yes'],
+                            onChanged: (newValue) async {
+                              await ShoppingDatabaseMethods()
+                                  .updateIfTicked(category, ds['Id']);
+                              setState(() {});
+                            },
+                            controlAffinity: ListTileControlAffinity.leading,
+                          );
+                        }),
+                  ],
+                ),
               )
             : const CircularProgressIndicator();
       },

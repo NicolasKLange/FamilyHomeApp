@@ -35,5 +35,18 @@ class ShoppingDatabaseMethods {
         .update({'Yes': true}); // Atualiza o campo 'Yes'
   }
 
-  //Remover lista de produtos
+  // Remover toda a lista de compras (subcoleção da categoria)
+  Future<void> deleteProductList(String category) async {
+    final batch = _firestore.batch();
+    final collectionRef = _firestore
+        .collection('ShoppingLists')
+        .doc(userId)
+        .collection(category);
+
+    final querySnapshot = await collectionRef.get();
+    for (var doc in querySnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
+  }
 }
