@@ -96,21 +96,38 @@ class _SupermarketState extends State<Supermarket> {
                                         // Botão de Excluir Lista
                                         GestureDetector(
                                           onTap: () {
-                                            showDialog(
+                                            showDialog( 
                                               context: context,
                                               builder: (context) => AlertDialog(
                                                 title: const Text(
-                                                    "Confirmar Exclusão"),
+                                                  "Confirmar Exclusão",
+                                                  style: TextStyle(
+                                                      color: Color(0xFF2B3649),
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                backgroundColor: const Color(0xFFEDE8E8),
                                                 content: const Text(
-                                                    "Você realmente deseja excluir esta lista?"),
+                                                  "Você realmente deseja excluir esta lista?",
+                                                  style: TextStyle(
+                                                    color: Color(0xFF2B3649),
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () {
                                                       Navigator.of(context)
                                                           .pop(); // Fecha o diálogo
                                                     },
-                                                    child:
-                                                        const Text("Cancelar"),
+                                                    child: const Text(
+                                                      "Cancelar",
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFF2B3649),
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
                                                   ),
                                                   TextButton(
                                                     onPressed: () async {
@@ -129,7 +146,7 @@ class _SupermarketState extends State<Supermarket> {
                                                     child: const Text(
                                                       "Excluir",
                                                       style: TextStyle(
-                                                          color: Colors.red),
+                                                          color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold,),
                                                     ),
                                                   ),
                                                 ],

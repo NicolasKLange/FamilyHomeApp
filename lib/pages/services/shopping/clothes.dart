@@ -59,21 +59,122 @@ class _ClothesState extends State<Clothes> {
                                 fontWeight: FontWeight.bold),
                           ),
                           GestureDetector(
-                            onTap: () async {
-                              await ShoppingDatabaseMethods()
-                                  .deleteProductList(category);
-                              setState(() {
-                                todoStream =
-                                    null; // Limpa a lista após a exclusão
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Lista de compras excluída com sucesso!')),
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                backgroundColor:
+                                    Colors.transparent, // Fundo transparente
+                                builder: (context) {
+                                  return Container(
+                                    height: 200,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        // Ícone de Cancelar
+                                        Align(
+                                          alignment: Alignment.topRight,
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.cancel,
+                                              color: Colors.grey,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); // Fecha o menu inferior
+                                            },
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        // Botão de Excluir Lista
+                                        GestureDetector(
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                title: const Text(
+                                                    "Confirmar Exclusão"),
+                                                content: const Text(
+                                                    "Você realmente deseja excluir esta lista?"),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop(); // Fecha o diálogo
+                                                    },
+                                                    child:
+                                                        const Text("Cancelar"),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () async {
+                                                      await ShoppingDatabaseMethods()
+                                                          .deleteProductList(
+                                                              category);
+                                                      setState(() {
+                                                        todoStream =
+                                                            null; // Limpa a lista após a exclusão
+                                                      });
+                                                      Navigator.of(context)
+                                                          .pop(); // Fecha o diálogo
+                                                      Navigator.of(context)
+                                                          .pop(); // Fecha o menu
+                                                    },
+                                                    child: const Text(
+                                                      "Excluir",
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 30),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 15),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red.shade50,
+                                              border:
+                                                  Border.all(color: Colors.red),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: const Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.delete,
+                                                    color: Colors.red),
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  "Excluir lista",
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                      ],
+                                    ),
+                                  );
+                                },
                               );
                             },
                             child: const Icon(
-                              Icons.cancel,
+                              Icons.more_vert,
                               color: Color(0xFF2B3649),
                             ),
                           ),
