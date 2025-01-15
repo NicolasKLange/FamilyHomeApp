@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../assets/components/navigation_bar/customNavigationBar.dart';
-// Importando as telas
 import '../calendar/calendar.dart';
 import '../profile/profile.dart';
 
@@ -15,30 +14,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
-  String userName = ''; // Armazena o nome do usuário
   int _opcaoSelecionada = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchUserName();
-  }
-
-  Future<void> _fetchUserName() async {
-    try {
-      // Obtém o documento do usuário no Firestore
-      final userDoc = await FirebaseFirestore.instance.collection('Users').doc(user.uid).get();
-
-      setState(() {
-        // Atualiza o nome do usuário com o valor do Firestore
-        userName = userDoc['name'] ?? 'Usuário';
-      });
-    } catch (e) {
-      // Em caso de erro, exibe o e-mail como fallback
-      setState(() {
-        userName = user.email!;
-      });
-    }
+  Stream<DocumentSnapshot> get userStream {
+    return FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots();
   }
 
   @override
@@ -46,30 +25,41 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xFFA8BEE0),
 
-      //AppBar com logo e nome do usuário
+      // AppBar com logo e nome do usuário
       appBar: AppBar(
         backgroundColor: const Color(0xFF577096),
-        title: Row(
-          children: [
-            Image.asset(
-              'lib/assets/images/logoApp.png',
-              height: 40,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              userName.isNotEmpty ? userName : 'Carregando...', // Exibe o nome ou uma mensagem de carregamento
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xFFEDE8E8),
-              ),
-            ),
-          ],
+        title: StreamBuilder<DocumentSnapshot>(
+          stream: userStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data!.exists) {
+              final userName = snapshot.data!['name'] ?? 'Usuário';
+              return Row(
+                children: [
+                  Image.asset(
+                    'lib/assets/images/logoApp.png',
+                    height: 40,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    userName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFFEDE8E8),
+                    ),
+                  ),
+                ],
+              );
+            }
+            return const Text(
+              'Carregando...',
+              style: TextStyle(fontSize: 16, color: Color(0xFFEDE8E8)),
+            );
+          },
         ),
-        automaticallyImplyLeading:
-            false, // Remove o botão de voltar automaticamente
+        automaticallyImplyLeading: false, // Remove o botão de voltar automaticamente
       ),
 
-      //Selecionar tela da NavigationBar
+      // Selecionar tela da NavigationBar
       body: IndexedStack(
         index: _opcaoSelecionada,
         children: const <Widget>[
@@ -79,7 +69,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
 
-      //NavigationBar
+      // NavigationBar
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: _opcaoSelecionada,
         onDestinationSelected: (int index) {
@@ -91,6 +81,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 
 
 class FuncionalidadesScreen extends StatelessWidget {

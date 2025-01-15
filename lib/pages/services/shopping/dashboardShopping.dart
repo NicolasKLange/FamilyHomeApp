@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../assets/components/navigation_bar/customNavigationBar.dart';
@@ -15,34 +16,50 @@ class _ShoppingState extends State<Shopping> {
   final user = FirebaseAuth.instance.currentUser!;
   int _opcaoSelecionada = 0;
 
+  Stream<DocumentSnapshot> get userStream {
+    return FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFA8BEE0),
 
-      //AppBar com logo e email do login
+      // AppBar com logo e nome do usuário
       appBar: AppBar(
         backgroundColor: const Color(0xFF577096),
-        title: Row(
-          children: [
-            Image.asset(
-              'lib/assets/images/logoApp.png',
-              height: 40,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              user.email!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xFFEDE8E8),
-              ),
-            ),
-          ],
+        title: StreamBuilder<DocumentSnapshot>(
+          stream: userStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data!.exists) {
+              final userName = snapshot.data!['name'] ?? 'Usuário';
+              return Row(
+                children: [
+                  Image.asset(
+                    'lib/assets/images/logoApp.png',
+                    height: 40,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    userName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFFEDE8E8),
+                    ),
+                  ),
+                ],
+              );
+            }
+            return const Text(
+              'Carregando...',
+              style: TextStyle(fontSize: 16, color: Color(0xFFEDE8E8)),
+            );
+          },
         ),
-        automaticallyImplyLeading:
-            false, // Remove o botão de voltar automaticamente
+        automaticallyImplyLeading: false, // Remove o botão de voltar
       ),
-      //Selecionar tela da NavigationBar
+
+      // Selecionar tela da NavigationBar
       body: IndexedStack(
         index: _opcaoSelecionada,
         children: const <Widget>[
@@ -52,7 +69,7 @@ class _ShoppingState extends State<Shopping> {
         ],
       ),
 
-      //NavigationBar
+      // NavigationBar
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: _opcaoSelecionada,
         onDestinationSelected: (int index) {
@@ -75,7 +92,6 @@ class ShoppingScreen extends StatelessWidget {
         color: const Color(0xFFEDE8E8),
         borderRadius: BorderRadius.circular(15.0),
         border: Border.all(color: const Color(0xFF2B3649), width: 2),
-        //COLOCANDO SOMBRA PARA PARECER FLUTURAR
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF2B3649).withOpacity(0.4),
@@ -119,11 +135,9 @@ class ShoppingScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-           Container(
-            margin:
-                const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
-            padding:
-                const EdgeInsets.only(bottom: 10, top: 10, left: 30),
+          Container(
+            margin: const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
+            padding: const EdgeInsets.only(bottom: 10, top: 10, left: 30),
             decoration: BoxDecoration(
               color: const Color(0xFFEDE8E8),
               borderRadius: BorderRadius.circular(10),
@@ -132,7 +146,7 @@ class ShoppingScreen extends StatelessWidget {
                 width: 2,
               ),
             ),
-             child: Row(
+            child: Row(
               children: [
                 GestureDetector(
                   onTap: () {
@@ -157,17 +171,16 @@ class ShoppingScreen extends StatelessWidget {
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
-                crossAxisSpacing: 18,
-                mainAxisSpacing: 18,
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(30),
-                childAspectRatio: 1,
+              crossAxisSpacing: 18,
+              mainAxisSpacing: 18,
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(30),
+              childAspectRatio: 1,
               children: [
                 _buildDashboardButton(context, 'Mercado', Icons.fastfood_rounded, '/supermarket'),
                 _buildDashboardButton(context, 'Farmácia', Icons.local_pharmacy_rounded, '/pharmacy'),
                 _buildDashboardButton(context, 'Roupas', Icons.store_mall_directory, '/clothes'),
                 _buildDashboardButton(context, 'Escola', Icons.school_rounded, '/school'),
-                //_buildDashboardButton(context, 'Diversos', Icons., '/several'),
               ],
             ),
           ),
@@ -176,4 +189,3 @@ class ShoppingScreen extends StatelessWidget {
     );
   }
 }
-

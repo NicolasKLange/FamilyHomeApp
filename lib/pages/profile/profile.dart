@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'databaseProfile.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -38,15 +39,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _updateProfile() async {
-    await _userDatabase.updateUserProfile(
-      nameController.text,
-      cpfController.text.isEmpty ? null : cpfController.text,
-      birthdateController.text.isEmpty ? null : birthdateController.text,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Perfil atualizado com sucesso!')),
-    );
-  }
+  await FirebaseFirestore.instance.collection('Users').doc(user!.uid).update({
+    'name': nameController.text,
+    'cpf': cpfController.text.isEmpty ? null : cpfController.text,
+    'birthdate': birthdateController.text.isEmpty ? null : birthdateController.text,
+  });
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('Perfil atualizado com sucesso!')),
+  );
+}
+
 
   void signUserOutWithEmailAndPassword() {
     FirebaseAuth.instance.signOut();

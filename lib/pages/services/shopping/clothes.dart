@@ -214,6 +214,10 @@ class _ClothesState extends State<Clothes> {
     );
   }
 
+  Stream<DocumentSnapshot> get userStream {
+    return FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots();
+  }
+  
   TextEditingController todoController = TextEditingController();
 
   @override
@@ -233,23 +237,35 @@ class _ClothesState extends State<Clothes> {
       backgroundColor: const Color(0xFFA8BEE0),
       appBar: AppBar(
         backgroundColor: const Color(0xFF577096),
-        title: Row(
-          children: [
-            Image.asset(
-              'lib/assets/images/logoApp.png',
-              height: 40,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              user.email!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xFFEDE8E8),
-              ),
-            ),
-          ],
+        title: StreamBuilder<DocumentSnapshot>(
+          stream: userStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data!.exists) {
+              final userName = snapshot.data!['name'] ?? 'Usuário';
+              return Row(
+                children: [
+                  Image.asset(
+                    'lib/assets/images/logoApp.png',
+                    height: 40,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    userName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFFEDE8E8),
+                    ),
+                  ),
+                ],
+              );
+            }
+            return const Text(
+              'Carregando...',
+              style: TextStyle(fontSize: 16, color: Color(0xFFEDE8E8)),
+            );
+          },
         ),
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false, // Remove o botão de voltar automaticamente
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
