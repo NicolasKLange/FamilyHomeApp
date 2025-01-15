@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'databaseProfile.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -48,6 +48,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void signUserOutWithEmailAndPassword() {
+    FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(
+        context, '/login'); // Redireciona para a tela de login
+  }
+
+  void forgetAccountWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    try {
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+      }
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Erro ao deslogar: $e"),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -57,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: EdgeInsets.only(top: 30),
             child: Text(
               'Perfil',
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 20),
@@ -99,7 +122,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Campo de data de nascimento
                       TextField(
                         controller: birthdateController,
-                        decoration: const InputDecoration(labelText: 'Data de Nascimento'),
+                        decoration: const InputDecoration(
+                            labelText: 'Data de Nascimento'),
                         keyboardType: TextInputType.datetime,
                       ),
                       const SizedBox(height: 20),
@@ -107,8 +131,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ElevatedButton(
                         onPressed: _updateProfile,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pink,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          backgroundColor: const Color(0XFF577096),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -119,6 +144,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Botão para esquecer o e-mail cadastrado
+                GestureDetector(
+                  onTap: forgetAccountWithGoogle,
+                  child: const Text(
+                    "Esquecer e-mail cadastrado",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 16,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Botão de logout
+                ElevatedButton.icon(
+                  onPressed: signUserOutWithEmailAndPassword,
+                  icon: const Icon(Icons.logout),
+                  label: Text(
+                    "Logout",
+                    style: TextStyle(
+                      color: Colors.grey.shade100,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
                   ),
                 ),
               ],

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../assets/components/navigation_bar/customNavigationBar.dart';
@@ -14,14 +15,38 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
+  String userName = ''; // Armazena o nome do usuário
   int _opcaoSelecionada = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName();
+  }
+
+  Future<void> _fetchUserName() async {
+    try {
+      // Obtém o documento do usuário no Firestore
+      final userDoc = await FirebaseFirestore.instance.collection('Users').doc(user.uid).get();
+
+      setState(() {
+        // Atualiza o nome do usuário com o valor do Firestore
+        userName = userDoc['name'] ?? 'Usuário';
+      });
+    } catch (e) {
+      // Em caso de erro, exibe o e-mail como fallback
+      setState(() {
+        userName = user.email!;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFA8BEE0),
 
-      //AppBar com logo e email do login
+      //AppBar com logo e nome do usuário
       appBar: AppBar(
         backgroundColor: const Color(0xFF577096),
         title: Row(
@@ -32,7 +57,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(width: 10),
             Text(
-              user.email!,
+              userName.isNotEmpty ? userName : 'Carregando...', // Exibe o nome ou uma mensagem de carregamento
               style: const TextStyle(
                 fontSize: 16,
                 color: Color(0xFFEDE8E8),
@@ -66,6 +91,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 
 class FuncionalidadesScreen extends StatelessWidget {
   const FuncionalidadesScreen({super.key});
