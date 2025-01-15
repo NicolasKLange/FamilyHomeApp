@@ -175,7 +175,7 @@ class _PharmacyState extends State<Pharmacy> {
                             },
                             child: const Icon(
                               Icons.more_vert,
-                              color: Color(0xFF2B3649),
+                              color: Color.fromARGB(255, 0, 14, 37),
                             ),
                           ),
                         ],
