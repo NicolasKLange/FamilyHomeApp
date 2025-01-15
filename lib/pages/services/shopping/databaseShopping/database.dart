@@ -50,3 +50,4 @@ class ShoppingDatabaseMethods {
     await batch.commit();
   }
 }
+
