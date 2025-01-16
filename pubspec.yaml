@@ -29,6 +29,7 @@ dependencies:
   cloud_firestore: ^5.6.0
   random_string: ^2.3.1
   flutter_localization: ^0.3.1
+  flutter_multi_formatter: ^2.13.0
   
 dev_dependencies:
   flutter_test:

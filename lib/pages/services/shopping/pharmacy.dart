@@ -27,7 +27,7 @@ class _PharmacyState extends State<Pharmacy> {
     super.initState();
   }
 
-   Widget allProduct() {
+  Widget allProduct() {
     return StreamBuilder(
       stream: todoStream,
       builder: (context, AsyncSnapshot snapshot) {
@@ -215,9 +215,12 @@ class _PharmacyState extends State<Pharmacy> {
   }
 
   Stream<DocumentSnapshot> get userStream {
-    return FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots();
+    return FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user.uid)
+        .snapshots();
   }
-  
+
   TextEditingController todoController = TextEditingController();
 
   @override
@@ -265,14 +268,15 @@ class _PharmacyState extends State<Pharmacy> {
             );
           },
         ),
-        automaticallyImplyLeading: false, // Remove o botão de voltar automaticamente
+        automaticallyImplyLeading:
+            false, // Remove o botão de voltar automaticamente
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin: const EdgeInsets.only(
-                right: 30, left: 30, top: 30, bottom: 10),
+            margin:
+                const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
             padding: const EdgeInsets.only(bottom: 10, top: 10, left: 30),
             decoration: BoxDecoration(
               color: const Color(0xFFEDE8E8),

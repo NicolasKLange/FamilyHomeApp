@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,10 +27,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _initializeProfile() async {
-    // Inicializa o perfil do usuário com valores iniciais, se não existir
     await _userDatabase.initializeUserProfile(user!.email!);
 
-    // Carrega os dados do usuário
     final userProfile = await _userDatabase.getUserProfile();
     setState(() {
       nameController.text = userProfile['name'] ?? '';
@@ -39,21 +38,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _updateProfile() async {
-  await FirebaseFirestore.instance.collection('Users').doc(user!.uid).update({
-    'name': nameController.text,
-    'cpf': cpfController.text.isEmpty ? null : cpfController.text,
-    'birthdate': birthdateController.text.isEmpty ? null : birthdateController.text,
-  });
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Perfil atualizado com sucesso!')),
-  );
-}
-
+    await FirebaseFirestore.instance.collection('Users').doc(user!.uid).update({
+      'name': nameController.text,
+      'cpf': cpfController.text.isEmpty ? null : cpfController.text,
+      'birthdate':
+          birthdateController.text.isEmpty ? null : birthdateController.text,
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Perfil atualizado com sucesso!')),
+    );
+  }
 
   void signUserOutWithEmailAndPassword() {
     FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(
-        context, '/login'); // Redireciona para a tela de login
+    Navigator.pushReplacementNamed(context, 'authPage');
   }
 
   void forgetAccountWithGoogle() async {
@@ -63,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         await googleSignIn.signOut();
       }
       await FirebaseAuth.instance.signOut();
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, 'authPage');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -89,7 +87,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Center(
             child: Column(
               children: [
-                // Formulário de edição do perfil
                 Container(
                   padding: const EdgeInsets.all(16),
                   margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -114,42 +111,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         decoration: const InputDecoration(labelText: 'Nome'),
                       ),
                       const SizedBox(height: 8),
-                      // Campo de CPF
+                      // Campo de CPF com máscara
                       TextField(
                         controller: cpfController,
                         decoration: const InputDecoration(labelText: 'CPF'),
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          MaskedInputFormatter('000.000.000-00')
+                        ],
                       ),
                       const SizedBox(height: 8),
-                      // Campo de data de nascimento
+                      // Campo de data de nascimento com máscara
                       TextField(
                         controller: birthdateController,
                         decoration: const InputDecoration(
-                            labelText: 'Data de Nascimento'),
-                        keyboardType: TextInputType.datetime,
-                      ),
-                      const SizedBox(height: 20),
-                      // Botão de salvar
-                      ElevatedButton(
-                        onPressed: _updateProfile,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0XFF577096),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                          labelText: 'Data de Nascimento',
                         ),
-                        child: const Text(
-                          "Salvar Alterações",
-                          style: TextStyle(color: Colors.black, fontSize: 16),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [MaskedInputFormatter('00/00/0000')],
+                      ),
+                      const SizedBox(height: 25),
+                      // Botão de salvar
+                      Center(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ElevatedButton(
+                            onPressed: _updateProfile,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0XFF577096),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text(
+                              "Salvar",
+                              style: TextStyle(
+                                  color: Color(0xFFA8BEE0), fontSize: 18),
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Botão para esquecer o e-mail cadastrado
                 GestureDetector(
                   onTap: forgetAccountWithGoogle,
                   child: const Text(
@@ -162,10 +169,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Botão de logout
                 ElevatedButton.icon(
                   onPressed: signUserOutWithEmailAndPassword,
-                  icon: const Icon(Icons.logout),
+                  icon: Icon(
+                    Icons.logout,
+                    color: Colors.grey.shade100,
+                  ),
                   label: Text(
                     "Logout",
                     style: TextStyle(

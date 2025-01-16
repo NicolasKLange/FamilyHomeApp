@@ -3,7 +3,7 @@ import 'package:family_home_app/pages/services/shopping/clothes.dart';
 import 'package:family_home_app/pages/services/shopping/dashboardShopping.dart';
 import 'package:family_home_app/pages/services/shopping/pharmacy.dart';
 import 'package:family_home_app/pages/services/shopping/school.dart';
-import 'package:family_home_app/pages/services/tasksList/tasksList.dart';
+//import 'package:family_home_app/pages/services/tasksList/tasksList.dart';
 import 'package:family_home_app/testeFirebase/listEmployee.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
