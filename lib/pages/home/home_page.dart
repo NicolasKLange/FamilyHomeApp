@@ -17,7 +17,10 @@ class _HomePageState extends State<HomePage> {
   int _opcaoSelecionada = 0;
 
   Stream<DocumentSnapshot> get userStream {
-    return FirebaseFirestore.instance.collection('Users').doc(user.uid).snapshots();
+    return FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user.uid)
+        .snapshots();
   }
 
   @override
@@ -56,7 +59,8 @@ class _HomePageState extends State<HomePage> {
             );
           },
         ),
-        automaticallyImplyLeading: false, // Remove o botão de voltar automaticamente
+        automaticallyImplyLeading:
+            false, // Remove o botão de voltar automaticamente
       ),
 
       // Selecionar tela da NavigationBar
@@ -81,8 +85,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
 
 class FuncionalidadesScreen extends StatelessWidget {
   const FuncionalidadesScreen({super.key});
@@ -139,28 +141,56 @@ class FuncionalidadesScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(bottom: 10, top: 20),
-            child: Text(
-              'Funcionalidades',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2B3649),
+          Container(
+            margin: const EdgeInsets.only(
+              right: 30,
+              left: 30,
+              top: 30,
+              bottom: 10,
+            ),
+            padding: const EdgeInsets.only(
+              bottom: 10,
+              top: 10,
+              left: 30,
+              right: 30,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEDE8E8),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: const Color(0xFF2B3649),
+                width: 2,
               ),
+            ),
+            child: const Row(
+              children: [
+                SizedBox(
+                  width: 20.0,
+                ),
+                Text(
+                  'Funcionalidades',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2B3649),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
-                crossAxisSpacing: 18,
-                mainAxisSpacing: 18,
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(30),
-                childAspectRatio: 1,
+              crossAxisSpacing: 18,
+              mainAxisSpacing: 18,
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(30),
+              childAspectRatio: 1,
               children: [
-                _buildDashboardButton(context, 'Compras', Icons.shopping_cart, '/shopping'),
-                _buildDashboardButton(context, 'Tasks', Icons.list, '/tasksList'),
+                _buildDashboardButton(
+                    context, 'Compras', Icons.shopping_cart, '/shopping'),
+                _buildDashboardButton(
+                    context, 'Tasks', Icons.list, '/tasksList'),
               ],
             ),
           ),
@@ -169,4 +199,3 @@ class FuncionalidadesScreen extends StatelessWidget {
     );
   }
 }
-
