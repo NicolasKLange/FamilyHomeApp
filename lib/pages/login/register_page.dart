@@ -1,6 +1,8 @@
 import 'package:family_home_app/servicesAuth/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../assets/components/image_style/square_tile.dart';
 import '../../assets/components/text_fields/text_fields_login.dart';
 import '../../assets/components/buttons/button_login.dart';
@@ -43,7 +45,7 @@ signUserUp() async {
     // Verificar se a senha possui no mínimo 6 caracteres
     if (passwordController.text.length < 6) {
       Navigator.pop(context); // Fechar o carregando antes do erro
-      showErrorMessage('A senha deve ter no mínimo 6 caracteres');
+      showErrorMessagePassword('A senha deve ter no mínimo 6 caracteres');
       return;
     }
     
@@ -67,23 +69,29 @@ signUserUp() async {
   }
 }
 
+  // Mensagem de erro que senha deve ter no mínimo 6 caracteres
+  void showErrorMessagePassword(String message) {
+    Get.snackbar(
+      'Erro de Login', // Título
+      'Senha deve conter no mínimo 6 caracteres', // Mensagem
+      backgroundColor: const  Color(0xFF2B3649),
+      colorText: const Color(0xFFEDE8E8),
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.all(8.0),
+      duration: const Duration(seconds: 3),
+    );
+  }
 
-
-  // Mensagem de erro de email popup
+  // Mensagem de erro de senhas que não coencidem
   void showErrorMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blue,
-          title: Center(
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        );
-      },
+    Get.snackbar(
+      'Erro de Login', // Título
+      'Senhas não coencidem, tente novamente', // Mensagem
+      backgroundColor: const  Color(0xFF2B3649),
+      colorText: const Color(0xFFEDE8E8),
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.all(8.0),
+      duration: const Duration(seconds: 3),
     );
   }
 
