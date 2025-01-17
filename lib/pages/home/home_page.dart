@@ -160,7 +160,6 @@ class FuncionalidadesScreen extends StatelessWidget {
                 childAspectRatio: 1,
               children: [
                 _buildDashboardButton(context, 'Compras', Icons.shopping_cart, '/shopping'),
-                _buildDashboardButton(context, 'Funcionário', Icons.person, '/listEmployes'),
                 _buildDashboardButton(context, 'Tasks', Icons.list, '/tasksList'),
               ],
             ),
