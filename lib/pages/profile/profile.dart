@@ -86,10 +86,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 20),
           Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Círculo para foto do usuário (Funcionalidade futura)
+                CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.grey.shade300,
+                  child: Icon(
+                    Icons.person,
+                    size: 50,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(12),
@@ -130,62 +142,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         keyboardType: TextInputType.number,
                         inputFormatters: [MaskedInputFormatter('00/00/0000')],
                       ),
-                      const SizedBox(height: 25),
-                      // Botão de salvar
-                      Center(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
-                          child: ElevatedButton(
-                            onPressed: _updateProfile,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0XFF577096),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: const Text(
-                              "Salvar",
-                              style: TextStyle(
-                                  color: Color(0xFFA8BEE0), fontSize: 18),
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: forgetAccountWithGoogle,
-                  child: const Text(
-                    "Esquecer e-mail cadastrado",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 16,
-                      decoration: TextDecoration.underline,
+                const SizedBox(
+                  height: 20,
+                ),
+                // Botão de salvar
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ElevatedButton(
+                    onPressed: _updateProfile,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0XFF577096),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Salvar",
+                      style: TextStyle(color: Color(0xFFA8BEE0), fontSize: 18),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: signUserOutWithEmailAndPassword,
-                  icon: Icon(
-                    Icons.logout,
-                    color: Colors.grey.shade100,
-                  ),
-                  label: Text(
-                    "Logout",
-                    style: TextStyle(
-                      color: Colors.grey.shade100,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: forgetAccountWithGoogle,
+                      child: const Text(
+                        "Esquecer e-mail cadastrado",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                  ),
+                    ElevatedButton.icon(
+                      onPressed: signUserOutWithEmailAndPassword,
+                      icon: Icon(
+                        Icons.logout,
+                        color: Colors.grey.shade100,
+                      ),
+                      label: Text(
+                        "Logout",
+                        style: TextStyle(
+                          color: Colors.grey.shade100,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
