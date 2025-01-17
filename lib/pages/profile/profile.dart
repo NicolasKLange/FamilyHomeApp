@@ -49,28 +49,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void signUserOutWithEmailAndPassword() {
-    FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(context, 'authPage');
-  }
-
-  void forgetAccountWithGoogle() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-    try {
-      if (await googleSignIn.isSignedIn()) {
-        await googleSignIn.signOut();
-      }
-      await FirebaseAuth.instance.signOut();
-      Navigator.pushReplacementNamed(context, 'authPage');
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Erro ao deslogar: $e"),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -78,9 +56,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 30),
-            child: Text(
-              'Perfil',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Perfil',
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0XFF2B3649),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 20),
@@ -103,13 +95,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.all(16),
                   margin: const EdgeInsets.symmetric(horizontal: 40),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: const Color(0XFFEDE8E8),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 2,
-                        blurRadius: 5,
+                        blurRadius: 7,
                         offset: const Offset(0, 3),
                       ),
                     ],
@@ -120,13 +112,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Campo de nome
                       TextField(
                         controller: nameController,
-                        decoration: const InputDecoration(labelText: 'Nome'),
+                        decoration: const InputDecoration(
+                          labelText: 'Nome',
+                          border: InputBorder.none,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       // Campo de CPF com máscara
                       TextField(
                         controller: cpfController,
-                        decoration: const InputDecoration(labelText: 'CPF'),
+                        decoration: const InputDecoration(
+                          labelText: 'CPF',
+                          border: InputBorder.none,
+                        ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           MaskedInputFormatter('000.000.000-00')
@@ -138,6 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         controller: birthdateController,
                         decoration: const InputDecoration(
                           labelText: 'Data de Nascimento',
+                          border: InputBorder.none,
                         ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [MaskedInputFormatter('00/00/0000')],
@@ -166,41 +165,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: TextStyle(color: Color(0xFFA8BEE0), fontSize: 18),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: forgetAccountWithGoogle,
-                      child: const Text(
-                        "Esquecer e-mail cadastrado",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 16,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: signUserOutWithEmailAndPassword,
-                      icon: Icon(
-                        Icons.logout,
-                        color: Colors.grey.shade100,
-                      ),
-                      label: Text(
-                        "Logout",
-                        style: TextStyle(
-                          color: Colors.grey.shade100,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
