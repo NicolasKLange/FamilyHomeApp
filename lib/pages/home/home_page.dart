@@ -189,7 +189,6 @@ class FuncionalidadesScreen extends StatelessWidget {
         color: const Color(0xFFEDE8E8),
         borderRadius: BorderRadius.circular(15.0),
         border: Border.all(color: const Color(0xFF2B3649), width: 2),
-        //COLOCANDO SOMBRA PARA PARECER FLUTURAR
         boxShadow: [
           BoxShadow(
             // ignore: deprecated_member_use
