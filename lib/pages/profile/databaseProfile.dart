@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDatabaseMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String userId = FirebaseAuth
-      .instance.currentUser!.uid; // Obtém o UID do usuário autenticado
+  final String userId = FirebaseAuth.instance.currentUser!.uid; // Obtém o UID do usuário autenticado
 
   // Inicializar o perfil do usuário
   Future<void> initializeUserProfile(String email) async {
@@ -12,18 +11,17 @@ class UserDatabaseMethods {
     final docSnapshot = await userDoc.get();
 
     if (!docSnapshot.exists) {
+      // Cria o documento do usuário com valores iniciais
       await userDoc.set({
-        'name': email,
+        'name': email, // Nome inicial é o e-mail do usuário
         'cpf': null,
         'birthdate': null,
-        'profileImageUrl': null, // Adicionar o campo da foto de perfil
       });
     }
   }
 
   // Atualizar informações do perfil do usuário
-  Future<void> updateUserProfile(
-      String name, String? cpf, String? birthdate) async {
+  Future<void> updateUserProfile(String name, String? cpf, String? birthdate) async {
     final userDoc = _firestore.collection('Users').doc(userId);
     await userDoc.update({
       'name': name,
@@ -36,4 +34,5 @@ class UserDatabaseMethods {
   Future<DocumentSnapshot> getUserProfile() async {
     return await _firestore.collection('Users').doc(userId).get();
   }
+  
 }
