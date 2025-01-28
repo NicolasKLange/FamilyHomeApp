@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                   const Spacer(),
                   IconButton(
                     icon: const Icon(
-                      Icons.more_vert,
+                      Icons.logout,
                       color: Color(0xffEDE8E8),
                     ),
                     onPressed: () => _showOptionsModal(context),

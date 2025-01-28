@@ -293,7 +293,7 @@ class _ClothesState extends State<Clothes> {
                   const Spacer(),
                   IconButton(
                     icon: const Icon(
-                      Icons.more_vert,
+                      Icons.logout,
                       color: Color(0xffEDE8E8),
                     ),
                     onPressed: () => _showOptionsModal(context),
