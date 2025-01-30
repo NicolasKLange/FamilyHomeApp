@@ -9,30 +9,30 @@ class ShoppingDatabaseMethods {
   Future<void> addProduct(
       String category, Map<String, dynamic> userShoppingMap, String id) async {
     return await _firestore
-        .collection('ShoppingLists') // Coleção principal
-        .doc(userId) // Documento do usuário
-        .collection(category) // Subcoleção da categoria (Supermarket, Pharmacy, etc.)
-        .doc(id) // Documento do produto
-        .set(userShoppingMap); // Salva o produto
+        .collection('ShoppingLists') 
+        .doc(userId) 
+        .collection(category) 
+        .doc(id) 
+        .set(userShoppingMap); 
   }
 
   // Obter produtos de uma categoria específica
   Future<Stream<QuerySnapshot>> getProducts(String category) async {
     return _firestore
-        .collection('ShoppingLists') // Coleção principal
-        .doc(userId) // Documento do usuário
-        .collection(category) // Subcoleção da categoria
-        .snapshots(); // Retorna os dados como stream
+        .collection('ShoppingLists') 
+        .doc(userId) 
+        .collection(category) 
+        .snapshots(); 
   }
 
   // Atualizar o status "Yes" de um produto
   Future<void> updateIfTicked(String category, String id) async {
     return await _firestore
-        .collection('ShoppingLists') // Coleção principal
-        .doc(userId) // Documento do usuário
-        .collection(category) // Subcoleção da categoria
-        .doc(id) // Documento do produto
-        .update({'Yes': true}); // Atualiza o campo 'Yes'
+        .collection('ShoppingLists') 
+        .doc(userId) 
+        .collection(category) 
+        .doc(id) 
+        .update({'Yes': true});
   }
 
   // Remover toda a lista de compras (subcoleção da categoria)

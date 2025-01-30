@@ -1,53 +1,46 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-class TaskDatabaseMethods {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String userId = FirebaseAuth.instance.currentUser!.uid;
+class DatabaseTasksList {
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> addTask(DateTime date, String taskDescription) async {
-    final taskDoc = _firestore
-        .collection('Tasks')
-        .doc(userId)
-        .collection('UserTasks')
-        .doc(date.toIso8601String());
-
-    final snapshot = await taskDoc.get();
-
-    if (snapshot.exists) {
-      await taskDoc.update({
-        'tasks': FieldValue.arrayUnion([taskDescription]),
-      });
-    } else {
-      await taskDoc.set({
-        'tasks': [taskDescription],
-      });
-    }
-  }
-
-  Future<List<String>> getTasks(DateTime date) async {
-    final taskDoc = _firestore
-        .collection('Tasks')
-        .doc(userId)
-        .collection('UserTasks')
-        .doc(date.toIso8601String());
-
-    final snapshot = await taskDoc.get();
-    if (snapshot.exists) {
-      return List<String>.from(snapshot.data()!['tasks']);
-    }
-    return [];
-  }
-
-  Future<void> deleteTask(DateTime date, String taskDescription) async {
-    final taskDoc = _firestore
-        .collection('Tasks')
-        .doc(userId)
-        .collection('UserTasks')
-        .doc(date.toIso8601String());
-
-    await taskDoc.update({
-      'tasks': FieldValue.arrayRemove([taskDescription]),
+  // Adicionar uma nova tarefa
+  static Future<void> addTask(String userId, DateTime date, String description) async {
+    String formattedDate = "${date.year}-${date.month}-${date.day}";
+    await _firestore.collection('Users').doc(userId).collection('Tasks').add({
+      'description': description,
+      'completed': false,
+      'date': formattedDate,
     });
+  }
+
+  // Obter tarefas para um dia específico
+  static Stream<QuerySnapshot> getTasks(String userId, DateTime date) {
+    String formattedDate = "${date.year}-${date.month}-${date.day}";
+    return _firestore
+        .collection('Users')
+        .doc(userId)
+        .collection('Tasks')
+        .where('date', isEqualTo: formattedDate)
+        .snapshots();
+  }
+
+  // Marcar uma tarefa como concluída
+  static Future<void> toggleTaskCompletion(String userId, DateTime date, String taskId, bool currentStatus) async {
+    await _firestore
+        .collection('Users')
+        .doc(userId)
+        .collection('Tasks')
+        .doc(taskId)
+        .update({'completed': !currentStatus});
+  }
+
+  // Deletar uma tarefa
+  static Future<void> deleteTask(String userId, DateTime date, String taskId) async {
+    await _firestore
+        .collection('Users')
+        .doc(userId)
+        .collection('Tasks')
+        .doc(taskId)
+        .delete();
   }
 }

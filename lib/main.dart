@@ -6,6 +6,8 @@ import 'package:family_home_app/pages/services/shopping/school.dart';
 import 'package:family_home_app/pages/services/tasksList/tasksList.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
 import 'pages/login/auth_page.dart';
 import 'package:get/get.dart';
@@ -17,6 +19,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await initializeDateFormatting('pt_BR', null);
   runApp(const MyApp());
 }
 
@@ -39,6 +42,13 @@ class MyApp extends StatelessWidget {
         '/clothes': (context) => const Clothes(),
         '/school': (context) => const School(),
       },
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+    supportedLocales: const [Locale('pt', 'BR')],
+    
     );
   }
 }
