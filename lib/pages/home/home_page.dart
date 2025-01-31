@@ -282,7 +282,9 @@ class FuncionalidadesScreen extends StatelessWidget {
                 _buildDashboardButton(
                     context, 'Compras', Icons.shopping_cart, '/shopping'),
                 _buildDashboardButton(
-                    context, 'Tasks', Icons.list, '/tasksList'),
+                    context, 'Tarefas', Icons.list, '/tasksList'),
+                _buildDashboardButton(
+                    context, 'Rotina', Icons.route_outlined, '/rotine'),
               ],
             ),
           ),

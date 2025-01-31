@@ -25,34 +25,97 @@ class _TasksListState extends State<TasksList> {
         .snapshots();
   }
 
+  //Dialog para adicionar tarefa do dia
   void _showAddTaskDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Adicionar Tarefa"),
-        content: TextField(
-          controller: taskController,
-          decoration: InputDecoration(hintText: "Descrição da tarefa"),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(
+                      Icons.cancel,
+                      color: Color(0xFF577096),
+                    ),
+                  ),
+                  const SizedBox(width: 25.0),
+                  const Text(
+                    'Adicionar Tarefa',
+                    style: TextStyle(
+                      color: Color(0xFF2B3649),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              const Text(
+                'Descrição',
+                style: TextStyle(
+                  color: Color(0xFF2B3649),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38, width: 2.0),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  controller: taskController,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Descrição da tarefa',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              GestureDetector(
+                onTap: () {
+                  if (taskController.text.isNotEmpty) {
+                    DatabaseTasksList.addTask(
+                      user.uid,
+                      selectedDate,
+                      taskController.text,
+                    );
+                    taskController.clear();
+                    Navigator.pop(context);
+                  }
+                },
+                child: Center(
+                  child: Container(
+                    width: 100,
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF577096),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Adicionar',
+                        style: TextStyle(
+                          color: Color(0xFFEDE8E8),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text("Cancelar"),
-          ),
-          TextButton(
-            onPressed: () {
-              if (taskController.text.isNotEmpty) {
-                DatabaseTasksList.addTask(
-                    user.uid, selectedDate, taskController.text);
-                taskController.clear();
-                Navigator.pop(context);
-              }
-            },
-            child: Text("Adicionar"),
-          ),
-        ],
       ),
     );
   }
@@ -114,7 +177,6 @@ class _TasksListState extends State<TasksList> {
         automaticallyImplyLeading: false,
       ),
       body: Column(
-        
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 10),
@@ -136,7 +198,9 @@ class _TasksListState extends State<TasksList> {
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () => Navigator.pop(context),
                 ),
-                const SizedBox(width: 40,),
+                const SizedBox(
+                  width: 40,
+                ),
                 const Text(
                   ("Tarefas"),
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -145,12 +209,13 @@ class _TasksListState extends State<TasksList> {
             ),
           ),
           const SizedBox(height: 15),
+          //Dia de hoje baseado no dia selecionado
           Text(
             DateFormat("d 'de' MMMM 'de' yyyy", 'pt_BR').format(selectedDate),
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 15),
-          
+          const SizedBox(height: 20),
+          //Calendário scrolável
           SingleChildScrollView(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
@@ -168,19 +233,51 @@ class _TasksListState extends State<TasksList> {
                       });
                     },
                     child: Container(
-                      
+                      width: 68,
+                      height: 100,
                       margin: const EdgeInsets.symmetric(horizontal: 5),
-                      padding: const EdgeInsets.only(top: 17, bottom: 17, left: 15, right: 15),
+                      padding: const EdgeInsets.only(top: 17),
                       decoration: BoxDecoration(
                         color: isToday ? const Color(0xff577096) : Colors.white,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(13),
                         border: Border.all(color: const Color(0xff2B3649)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xff2B3649).withOpacity(
+                                0.2), // Sombra preta com transparência
+                            blurRadius: 10, // Espalhamento da sombra
+                            offset: const Offset(3,
+                                10), // Deslocamento da sombra (horizontal, vertical)
+                          ),
+                        ],
                       ),
                       child: Column(
                         children: [
-                          Text(DateFormat('E', 'pt_BR').format(date), style: TextStyle(color: isToday ? Colors.white : const Color(0xff577096), fontWeight: FontWeight.bold),),
-                          Text("${date.day}", style: TextStyle(color: isToday ? Colors.white : const Color(0xff577096), fontWeight: FontWeight.bold), ),
-                          
+                          Text(
+                            DateFormat('E', 'pt_BR')
+                                .format(date)
+                                .replaceAll('.', '') // Remove o ponto final
+                                .capitalize(), // Deixa a primeira letra maiúscula
+                            style: TextStyle(
+                              color: isToday
+                                  ? Colors.white
+                                  : const Color(0xff2B3649),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "${date.day}",
+                            style: TextStyle(
+                                color: isToday
+                                    ? Colors.white
+                                    : const Color(0xff2B3649),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
                         ],
                       ),
                     ),
@@ -189,18 +286,28 @@ class _TasksListState extends State<TasksList> {
               ),
             ),
           ),
+          const SizedBox(
+            height: 15,
+          ),
+          //Tarefas
           Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Tarefas",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                IconButton(icon: Icon(Icons.add), onPressed: _showAddTaskDialog)
-              ],
+            padding: const EdgeInsets.all(15.0),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Tarefas",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: _showAddTaskDialog)
+                ],
+              ),
             ),
           ),
+
           Expanded(
             child: StreamBuilder(
               stream: DatabaseTasksList.getTasks(user.uid, selectedDate),
@@ -208,24 +315,53 @@ class _TasksListState extends State<TasksList> {
                 if (!snapshot.hasData)
                   return Center(child: CircularProgressIndicator());
                 if (snapshot.data!.docs.isEmpty) {
-                  return Center(
-                      child: Text("Não possui nenhuma tarefa neste dia!"));
+                  return const Center(
+                    child: Text(
+                      "Não possui nenhuma tarefa neste dia!",
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Color(0XFF2B3649),
+                          fontWeight: FontWeight.bold),
+                    ),
+                  );
                 }
                 return ListView(
                   children: snapshot.data!.docs.map((doc) {
-                    return ListTile(
-                      leading: Checkbox(
-                        value: doc['completed'],
-                        onChanged: (value) {
-                          DatabaseTasksList.toggleTaskCompletion(
-                              user.uid, selectedDate, doc.id, doc['completed']);
-                        },
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 25),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border:
+                            Border.all(color: Color(0XFF2B3649), width: 1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 4,
+                            offset: const Offset(2, 5),
+                          ),
+                        ],
                       ),
-                      title: Text(doc['description']),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => DatabaseTasksList.deleteTask(
-                            user.uid, selectedDate, doc.id),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                        child: ListTile(
+                          leading: Checkbox(
+                            activeColor:const  Color(0XFF577096),
+                            value: doc['completed'],
+                            onChanged: (value) {
+                              DatabaseTasksList.toggleTaskCompletion(user.uid,
+                                  selectedDate, doc.id, doc['completed']);
+                            },
+                          ),
+                          title: Text(doc['description']),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete,
+                                color: Color(0XFF2B3649),),
+                            onPressed: () => DatabaseTasksList.deleteTask(
+                                user.uid, selectedDate, doc.id),
+                          ),
+                        ),
                       ),
                     );
                   }).toList(),
@@ -320,5 +456,13 @@ class _TasksListState extends State<TasksList> {
         ),
       );
     }
+  }
+}
+
+//Extensão para deixar a primeira letra do dia da semana maiúsculo
+extension StringExtension on String {
+  String capitalize() {
+    if (isEmpty) return this;
+    return this[0].toUpperCase() + substring(1).toLowerCase();
   }
 }
