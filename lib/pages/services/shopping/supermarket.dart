@@ -445,97 +445,97 @@ class _SupermarketState extends State<Supermarket> {
   }
 
   Future openBox() => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            content: SingleChildScrollView(
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Icon(
-                            Icons.cancel,
-                            color: Color(0xFF577096),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 25.0,
-                        ),
-                        const Text(
-                          'Adicionar Produto',
-                          style: TextStyle(
-                              color: Color(0xFF2B3649),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    const Text(
-                      'Descrição',
-                      style: TextStyle(
-                          color: Color(0xFF2B3649),
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black38, width: 2.0),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: TextField(
-                        controller: todoController,
-                        decoration: const InputDecoration(
-                            border: InputBorder.none, hintText: 'Incluir'),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        String id = randomAlphaNumeric(10);
-                        Map<String, dynamic> userTodo = {
-                          'Product': todoController.text,
-                          'Id': id,
-                          'Yes': false,
-                        };
-                        ShoppingDatabaseMethods()
-                            .addProduct(category, userTodo, id);
-                        Navigator.pop(context);
-                      },
-                      child: Center(
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF577096),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Center(
-                              child: Text(
-                            'Adicionar',
-                            style: TextStyle(
-                                color: Color(0xFFEDE8E8),
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
-                          )),
-                        ),
-                      ),
-                    )
-                  ],
+  context: context,
+  builder: (context) => AlertDialog(
+    content: SingleChildScrollView(
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Icon(
+                    Icons.cancel,
+                    color: Color(0xFF577096),
+                  ),
                 ),
+                const SizedBox(width: 25.0),
+                const Text(
+                  'Adicionar Produto',
+                  style: TextStyle(
+                      color: Color(0xFF2B3649),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20.0),
+            const Text(
+              'Descrição',
+              style: TextStyle(
+                  color: Color(0xFF2B3649), fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10.0),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black38, width: 2.0),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: TextField(
+                controller: todoController,
+                decoration: const InputDecoration(
+                    border: InputBorder.none, hintText: 'Produto'),
               ),
             ),
-          ));
+            const SizedBox(height: 20.0),
+            GestureDetector(
+              onTap: () {
+                if (todoController.text.isEmpty) {
+                  // Mostrar mensagem de erro ou alertar o usuário
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Por favor, insira um produto.')),
+                  );
+                } else {
+                  String id = randomAlphaNumeric(10);
+                  Map<String, dynamic> userTodo = {
+                    'Product': todoController.text,
+                    'Id': id,
+                    'Yes': false,
+                  };
+                  ShoppingDatabaseMethods().addProduct(category, userTodo, id);
+                  Navigator.pop(context);
+                }
+              },
+              child: Center(
+                child: Container(
+                  width: 100,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF577096),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Adicionar',
+                      style: TextStyle(
+                          color: Color(0xFFEDE8E8),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    ),
+  ),
+);
+
 }
