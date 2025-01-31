@@ -125,6 +125,7 @@ class _TasksListState extends State<TasksList> {
           ),
           SizedBox(height: 10),
           SingleChildScrollView(
+            
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
             child: Row(
