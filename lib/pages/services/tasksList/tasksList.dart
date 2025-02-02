@@ -217,97 +217,93 @@ class _TasksListState extends State<TasksList> {
           const SizedBox(height: 20),
           //Calendário scrolável
           SingleChildScrollView(
-  controller: _scrollController,
-  scrollDirection: Axis.horizontal,
-  child: Row(
-    children: List.generate(
-      DateTime(selectedDate.year, selectedDate.month + 1, 0).day,
-      (index) {
-        DateTime date = DateTime(selectedDate.year, selectedDate.month, index + 1);
-        DateTime today = DateTime.now();
-        
-        bool isToday = date.day == today.day && date.month == today.month && date.year == today.year;
-        bool isSelected = selectedDate.day == date.day && selectedDate.month == date.month && selectedDate.year == date.year;
-        bool isPastDay = date.isBefore(today); // Verifica se o dia já passou
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(
+                23, // 7 dias para trás + 15 dias para frente + o dia atual
+                (index) {
+                  DateTime date = DateTime.now()
+                      .subtract(Duration(days: 7))
+                      .add(Duration(days: index));
+                  DateTime today = DateTime.now();
 
-        return GestureDetector(
-          onTap: isPastDay ? null : () { // Impede o clique nos dias passados
-            setState(() {
-              selectedDate = date;
-            });
-          },
-          child: Container(
-            width: 68,
-            height: 100,
-            margin: const EdgeInsets.symmetric(horizontal: 5),
-            padding: const EdgeInsets.only(top: 17),
-            decoration: BoxDecoration(
-              color:  // Azul para o dia atual
-                   isSelected 
-                    ? const Color(0xff577096) // Azul para o dia selecionado
-                    : isPastDay 
-                      ? Colors.grey[300] // Cinza claro para dias passados
-                      : Colors.white, // Branco para os outros dias
-              borderRadius: BorderRadius.circular(13),
-              border: Border.all(color: const Color(0xff2B3649)),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0xff2B3649).withOpacity(0.2),
-                  blurRadius: 10,
-                  offset: const Offset(3, 10),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Text(
-                  DateFormat('E', 'pt_BR')
-                      .format(date)
-                      .replaceAll('.', '')
-                      .capitalize(),
-                  style: TextStyle(
-                    color: isToday 
-                        ? Colors.white 
-                        : isSelected 
-                          ? Colors.white 
-                          : isPastDay 
-                            ? Colors.grey[600] // Texto cinza escuro para dias passados
-                            : const Color(0xff2B3649),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "${date.day}",
-                  style: TextStyle(
-                    color: isToday 
-                        ? Colors.white 
-                        : isSelected 
-                          ? Colors.white 
-                          : isPastDay 
-                            ? Colors.grey[600] // Texto cinza escuro para dias passados
-                            : const Color(0xff2B3649),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ],
+                  bool isToday = date.day == today.day &&
+                      date.month == today.month &&
+                      date.year == today.year;
+                  bool isSelected = selectedDate.day == date.day &&
+                      selectedDate.month == date.month &&
+                      selectedDate.year == date.year;
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                    },
+                    child: Container(
+                      width: 68,
+                      height: 100,
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.only(top: 17),
+                      decoration: BoxDecoration(
+                        color:
+                            isSelected ? const Color(0xff577096) : const Color(0xffEDE8E8),
+                        borderRadius: BorderRadius.circular(13),
+                        border: Border.all(color: const Color(0xff2B3649)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xff2B3649).withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(3, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          //Dia da semana
+                          Text(
+                            DateFormat('E', 'pt_BR')
+                                .format(date)
+                                .replaceAll('.', '')
+                                .capitalize(),
+                            style: TextStyle(
+                              color: isToday
+                                  ? const Color(0xffA8BEE0)
+                              
+                                  : isSelected
+                                      ? const Color(0xffEDE8E8)
+                                      : const Color(0xff2B3649),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          //Dia
+                          Text(
+                            "${date.day}",
+                            style: TextStyle(
+                              color: isToday
+                                  ? const Color(0xffA8BEE0)
+                                  : isSelected
+                                      ? const Color(0xffEDE8E8)
+                                      : const Color(0xff2B3649),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
-        );
-      },
-    ),
-  ),
-),
-
-
           const SizedBox(
             height: 15,
           ),
-          //Tarefas
+          // Tarefas
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Padding(
@@ -315,12 +311,21 @@ class _TasksListState extends State<TasksList> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Tarefas",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Text(
+                    "Tarefas",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                   IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: _showAddTaskDialog)
+                    icon: const Icon(Icons.add),
+                    onPressed: selectedDate.isBefore(
+                            DateTime.now().subtract(const Duration(days: 1)))
+                        ? null
+                        : _showAddTaskDialog, // Desativa o botão se for dias passados
+                    color: selectedDate.isBefore(
+                            DateTime.now().subtract(const Duration(days: 1)))
+                        ? Colors.grey
+                        : null, // Muda a cor para indicar que está desativado
+                  ),
                 ],
               ),
             ),
@@ -349,7 +354,7 @@ class _TasksListState extends State<TasksList> {
                       margin: const EdgeInsets.symmetric(
                           vertical: 5, horizontal: 25),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: const Color(0xffEDE8E8),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Color(0XFF2B3649), width: 1),
                         boxShadow: [
