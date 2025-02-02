@@ -224,7 +224,7 @@ class _TasksListState extends State<TasksList> {
                 23, // 7 dias para trás + 15 dias para frente + o dia atual
                 (index) {
                   DateTime date = DateTime.now()
-                      .subtract(Duration(days: 7))
+                      .subtract(const Duration(days: 7))
                       .add(Duration(days: index));
                   DateTime today = DateTime.now();
 
@@ -234,6 +234,9 @@ class _TasksListState extends State<TasksList> {
                   bool isSelected = selectedDate.day == date.day &&
                       selectedDate.month == date.month &&
                       selectedDate.year == date.year;
+
+                  // Verificar se o dia é passado, excluindo o dia de hoje
+                  bool isPastDay = date.isBefore(today);
 
                   return GestureDetector(
                     onTap: () {
@@ -247,8 +250,19 @@ class _TasksListState extends State<TasksList> {
                       margin: const EdgeInsets.symmetric(horizontal: 5),
                       padding: const EdgeInsets.only(top: 17),
                       decoration: BoxDecoration(
-                        color:
-                            isSelected ? const Color(0xff577096) : const Color(0xffEDE8E8),
+                        color: isToday
+                            ? (isSelected
+                                ? const Color(
+                                    0xff577096) // Cor de seleção para o dia de hoje
+                                :  const Color(0xffEDE8E8)) // Cor fixa para o dia de hoje, caso não esteja selecionado
+                            : isSelected
+                                ? const Color(
+                                    0xff577096) // Cor para o dia selecionado
+                                : isPastDay && !isToday
+                                    ? const Color(
+                                        0xffD2D2D2) // Cor para dias passados
+                                    : const Color(0xffEDE8E8), // Cor padrão
+
                         borderRadius: BorderRadius.circular(13),
                         border: Border.all(color: const Color(0xff2B3649)),
                         boxShadow: [
@@ -261,7 +275,7 @@ class _TasksListState extends State<TasksList> {
                       ),
                       child: Column(
                         children: [
-                          //Dia da semana
+                          // Dia da semana
                           Text(
                             DateFormat('E', 'pt_BR')
                                 .format(date)
@@ -269,25 +283,28 @@ class _TasksListState extends State<TasksList> {
                                 .capitalize(),
                             style: TextStyle(
                               color: isToday
-                                  ? const Color(0xffA8BEE0)
-                              
+                                  ? const Color(0xff2B3649)
                                   : isSelected
                                       ? const Color(0xffEDE8E8)
-                                      : const Color(0xff2B3649),
+                                      : isPastDay && !isToday
+                                          ? const Color(0xff909090)
+                                          : const Color(0xff2B3649),
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                             ),
                           ),
                           const SizedBox(height: 5),
-                          //Dia
+                          // Dia
                           Text(
                             "${date.day}",
                             style: TextStyle(
                               color: isToday
-                                  ? const Color(0xffA8BEE0)
+                                  ? const Color(0xff2B3649)
                                   : isSelected
                                       ? const Color(0xffEDE8E8)
-                                      : const Color(0xff2B3649),
+                                      : isPastDay && !isToday
+                                          ? const Color(0xff909090)
+                                          : const Color(0xff414B5B),
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                             ),
@@ -300,6 +317,7 @@ class _TasksListState extends State<TasksList> {
               ),
             ),
           ),
+
           const SizedBox(
             height: 15,
           ),
