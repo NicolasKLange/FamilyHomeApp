@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'databaseProfile.dart';
+import '../../database/database.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,7 +13,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final User? user = FirebaseAuth.instance.currentUser;
-  final UserDatabaseMethods _userDatabase = UserDatabaseMethods();
+  final DatabaseMethods _userDatabase = DatabaseMethods();
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController cpfController = TextEditingController();

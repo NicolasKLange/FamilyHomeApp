@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
-import 'databaseTasksList.dart';
+import '../../../database/database.dart';
 
 class TasksList extends StatefulWidget {
   const TasksList({super.key});
@@ -17,6 +17,7 @@ class _TasksListState extends State<TasksList> {
   DateTime selectedDate = DateTime.now();
   TextEditingController taskController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final DatabaseMethods _databaseMethods = DatabaseMethods();
 
   Stream<DocumentSnapshot> get userStream {
     return FirebaseFirestore.instance
@@ -83,11 +84,7 @@ class _TasksListState extends State<TasksList> {
               GestureDetector(
                 onTap: () {
                   if (taskController.text.isNotEmpty) {
-                    DatabaseTasksList.addTask(
-                      user.uid,
-                      selectedDate,
-                      taskController.text,
-                    );
+                    _databaseMethods.addTask(selectedDate, taskController.text);
                     taskController.clear();
                     Navigator.pop(context);
                   }
@@ -254,7 +251,8 @@ class _TasksListState extends State<TasksList> {
                             ? (isSelected
                                 ? const Color(
                                     0xff577096) // Cor de seleção para o dia de hoje
-                                :  const Color(0xffEDE8E8)) // Cor fixa para o dia de hoje, caso não esteja selecionado
+                                : const Color(
+                                    0xffEDE8E8)) // Cor fixa para o dia de hoje, caso não esteja selecionado
                             : isSelected
                                 ? const Color(
                                     0xff577096) // Cor para o dia selecionado
@@ -351,18 +349,20 @@ class _TasksListState extends State<TasksList> {
 
           Expanded(
             child: StreamBuilder(
-              stream: DatabaseTasksList.getTasks(user.uid, selectedDate),
+              stream: DatabaseMethods().getTasks(selectedDate),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData)
-                  return Center(child: CircularProgressIndicator());
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 if (snapshot.data!.docs.isEmpty) {
                   return const Center(
                     child: Text(
                       "Não possui nenhuma tarefa neste dia!",
                       style: TextStyle(
-                          fontSize: 17,
-                          color: Color(0XFF2B3649),
-                          fontWeight: FontWeight.bold),
+                        fontSize: 17,
+                        color: Color(0XFF2B3649),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   );
                 }
@@ -390,8 +390,10 @@ class _TasksListState extends State<TasksList> {
                             activeColor: const Color(0XFF577096),
                             value: doc['completed'],
                             onChanged: (value) {
-                              DatabaseTasksList.toggleTaskCompletion(user.uid,
-                                  selectedDate, doc.id, doc['completed']);
+                              DatabaseMethods().toggleTaskCompletion(
+                                doc.id,
+                                doc['completed'],
+                              );
                             },
                           ),
                           title: Text(doc['description']),
@@ -400,8 +402,9 @@ class _TasksListState extends State<TasksList> {
                               Icons.delete,
                               color: Color(0XFF2B3649),
                             ),
-                            onPressed: () => DatabaseTasksList.deleteTask(
-                                user.uid, selectedDate, doc.id),
+                            onPressed: () {
+                              DatabaseMethods().deleteTask(doc.id);
+                            },
                           ),
                         ),
                       ),
@@ -508,3 +511,4 @@ extension StringExtension on String {
     return this[0].toUpperCase() + substring(1).toLowerCase();
   }
 }
+ 

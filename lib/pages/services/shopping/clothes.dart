@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:random_string/random_string.dart';
-import 'databaseShopping/database.dart';
+import '../../../database/database.dart';
 
 class Clothes extends StatefulWidget {
   const Clothes({super.key});
@@ -18,7 +18,7 @@ class _ClothesState extends State<Clothes> {
   final String category = "Clothes"; // Define a categoria
 
   getontheload() async {
-    todoStream = await ShoppingDatabaseMethods().getProducts(category);
+    todoStream = await DatabaseMethods().getProducts(category);
     setState(() {});
   }
 
@@ -79,9 +79,9 @@ class _ClothesState extends State<Clothes> {
                                     builder: (context) {
                                       return Container(
                                         height: 200,
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: const BorderRadius.only(
+                                          borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(20),
                                             topRight: Radius.circular(20),
                                           ),
@@ -145,7 +145,7 @@ class _ClothesState extends State<Clothes> {
                                                       ),
                                                       TextButton(
                                                         onPressed: () async {
-                                                          await ShoppingDatabaseMethods()
+                                                          await DatabaseMethods()
                                                               .deleteProductList(
                                                                   category);
                                                           setState(() {
@@ -239,7 +239,7 @@ class _ClothesState extends State<Clothes> {
                             ),
                             value: ds['Yes'],
                             onChanged: (newValue) async {
-                              await ShoppingDatabaseMethods()
+                              await DatabaseMethods()
                                   .updateIfTicked(category, ds['Id']);
                               setState(() {});
                             },
@@ -255,10 +255,7 @@ class _ClothesState extends State<Clothes> {
   }
 
   Stream<DocumentSnapshot> get userStream {
-    return FirebaseFirestore.instance
-        .collection('Users')
-        .doc(user.uid)
-        .snapshots();
+    return DatabaseMethods().getUserProfile().asStream();
   }
 
   TextEditingController todoController = TextEditingController();
@@ -510,7 +507,7 @@ class _ClothesState extends State<Clothes> {
                           'Id': id,
                           'Yes': false,
                         };
-                        ShoppingDatabaseMethods()
+                        DatabaseMethods()
                             .addProduct(category, userTodo, id);
                         Navigator.pop(context);
                       },
