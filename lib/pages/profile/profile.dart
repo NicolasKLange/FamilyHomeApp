@@ -50,7 +50,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'cpf': cpfController.text.isEmpty ? null : cpfController.text,
       'birthdate':
           birthdateController.text.isEmpty ? null : birthdateController.text,
-      'avatarColor': avatarColor.value.toString(), // Salvar a cor como uma String
+      'avatarColor':
+          avatarColor.value.toString(), // Salvar a cor como uma String
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -168,9 +169,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           labelText: 'Nome',
                           border: InputBorder.none,
                         ),
+                        onChanged: (value) {
+                          setState(
+                              () {}); // Atualiza a tela para refletir a nova inicial
+                        },
                       ),
                       const SizedBox(height: 8),
-                      // Campo de CPF 
+                      // Campo de CPF
                       TextField(
                         controller: cpfController,
                         decoration: const InputDecoration(

@@ -49,12 +49,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
             label: "Funcionalidades",
           ),
           NavigationDestination(
-            icon: Icon(Icons.calendar_month_outlined),
+            icon: Icon(Icons.family_restroom_outlined),
             selectedIcon: Icon(
-              Icons.calendar_month,
+              Icons.family_restroom_sharp,
               color: Color(0xFF577096),
             ),
-            label: "Calendário",
+            label: "Familia",
           ),
           NavigationDestination(
             icon: Icon(Icons.person_2_outlined),

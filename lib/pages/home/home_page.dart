@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../assets/components/navigation_bar/customNavigationBar.dart';
-import '../calendar/calendar.dart';
+import '../family/family.dart';
 import '../profile/profile.dart';
 
 class HomePage extends StatefulWidget {
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
         index: _opcaoSelecionada,
         children: const <Widget>[
           FuncionalidadesScreen(),
-          CalendarScreen(),
+          FamilyScreen(),
           ProfileScreen(),
         ],
       ),
@@ -283,8 +283,6 @@ class FuncionalidadesScreen extends StatelessWidget {
                     context, 'Compras', Icons.shopping_cart, '/shopping'),
                 _buildDashboardButton(
                     context, 'Tarefas', Icons.list, '/tasksList'),
-                _buildDashboardButton(
-                    context, 'Rotina', Icons.route_outlined, '/rotine'),
               ],
             ),
           ),

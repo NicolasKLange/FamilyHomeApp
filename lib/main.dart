@@ -1,5 +1,4 @@
 import 'package:family_home_app/pages/home/home_page.dart';
-import 'package:family_home_app/pages/services/rotine/routine.dart';
 import 'package:family_home_app/pages/services/shopping/clothes.dart';
 import 'package:family_home_app/pages/services/shopping/dashboardShopping.dart';
 import 'package:family_home_app/pages/services/shopping/pharmacy.dart';
@@ -42,7 +41,6 @@ class MyApp extends StatelessWidget {
         '/pharmacy': (context) => const Pharmacy(),
         '/clothes': (context) => const Clothes(),
         '/school': (context) => const School(),
-        '/rotine': (context) => const Rotine(),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
