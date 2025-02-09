@@ -20,7 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController cpfController = TextEditingController();
   final TextEditingController birthdateController = TextEditingController();
 
-  Color avatarColor = Colors.grey.shade300; // Cor padrão
+  Color avatarColor = Colors.grey.shade300; // Cor padrão do avatar de perfil
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       cpfController.text = userProfile['cpf'] ?? '';
       birthdateController.text = userProfile['birthdate'] ?? '';
 
-      // Carregar a cor salva
+      // Carregar a cor escolhida para o Firebase
       if (userProfile['avatarColor'] != null) {
         avatarColor = Color(int.parse(userProfile['avatarColor']));
       }
@@ -50,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'cpf': cpfController.text.isEmpty ? null : cpfController.text,
       'birthdate':
           birthdateController.text.isEmpty ? null : birthdateController.text,
-      'avatarColor': avatarColor.value.toString(), // Salvar cor como String
+      'avatarColor': avatarColor.value.toString(), // Salvar a cor como uma String
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             TextButton(
               onPressed: () {
-                _updateProfile(); // Salvar a cor escolhida
+                _updateProfile(); // Salvar a cor escolhida pelo usuário
                 Navigator.pop(context);
               },
               child: const Text("Salvar"),
@@ -124,16 +124,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Círculo para foto do usuário
+                // Círculo com a inicial do nome do usuário
                 GestureDetector(
-                  onTap: _pickColor, // Abre o seletor de cor ao tocar
+                  onTap: _pickColor,
                   child: CircleAvatar(
                     radius: 50,
                     backgroundColor: avatarColor,
                     child: Text(
                       nameController.text.isNotEmpty
                           ? nameController.text[0].toUpperCase()
-                          : '?', // Inicial do nome
+                          : '?', // Inicial do nome do usuário
                       style: const TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      // Campo de CPF com máscara
+                      // Campo de CPF 
                       TextField(
                         controller: cpfController,
                         decoration: const InputDecoration(
@@ -183,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      // Campo de data de nascimento com máscara
+                      // Campo de data de nascimento
                       TextField(
                         controller: birthdateController,
                         decoration: const InputDecoration(
