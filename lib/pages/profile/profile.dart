@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,6 +20,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController cpfController = TextEditingController();
   final TextEditingController birthdateController = TextEditingController();
 
+  Color avatarColor = Colors.grey.shade300; // Cor padrão
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +36,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       nameController.text = userProfile['name'] ?? '';
       cpfController.text = userProfile['cpf'] ?? '';
       birthdateController.text = userProfile['birthdate'] ?? '';
+
+      // Carregar a cor salva
+      if (userProfile['avatarColor'] != null) {
+        avatarColor = Color(int.parse(userProfile['avatarColor']));
+      }
     });
   }
 
@@ -42,9 +50,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'cpf': cpfController.text.isEmpty ? null : cpfController.text,
       'birthdate':
           birthdateController.text.isEmpty ? null : birthdateController.text,
+      'avatarColor': avatarColor.value.toString(), // Salvar cor como String
     });
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Perfil atualizado com sucesso!')),
+    );
+  }
+
+  // Método para selecionar uma cor
+  void _pickColor() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Escolha uma cor"),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: avatarColor,
+              onColorChanged: (Color color) {
+                setState(() {
+                  avatarColor = color;
+                });
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                _updateProfile(); // Salvar a cor escolhida
+                Navigator.pop(context);
+              },
+              child: const Text("Salvar"),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -79,14 +124,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Círculo para foto do usuário (Funcionalidade futura)
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.grey.shade300,
-                  child: Icon(
-                    Icons.person,
-                    size: 50,
-                    color: Colors.grey.shade700,
+                // Círculo para foto do usuário
+                GestureDetector(
+                  onTap: _pickColor, // Abre o seletor de cor ao tocar
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundColor: avatarColor,
+                    child: Text(
+                      nameController.text.isNotEmpty
+                          ? nameController.text[0].toUpperCase()
+                          : '?', // Inicial do nome
+                      style: const TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 30),
