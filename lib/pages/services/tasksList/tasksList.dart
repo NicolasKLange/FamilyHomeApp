@@ -323,10 +323,11 @@ class _TasksListState extends State<TasksList> {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(right: 15.0, left: 15.0, top: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  
                   const Text(
                     "Tarefas",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
