@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../database/database.dart';
+//import '../../database/database.dart';
 
 class FamilyScreen extends StatefulWidget {
   const FamilyScreen({super.key});
@@ -14,24 +14,17 @@ class FamilyScreen extends StatefulWidget {
 class _FamilyScreenState extends State<FamilyScreen> {
   Stream? todoStream;
   final user = FirebaseAuth.instance.currentUser!;
-  final DatabaseMethods _databaseMethods = DatabaseMethods();
+  //final DatabaseMethods _databaseMethods = DatabaseMethods();
   final TextEditingController familyNameController = TextEditingController();
   List<String> selectedUsers = [];
-  final String category = "Supermarket"; // Define a categoria
+  // Define a categoria
 
   @override
   void initState() {
     super.initState();
-    getOnTheLoad();
   }
 
-  void getOnTheLoad() async {
-    setState(() {
-      todoStream = _databaseMethods.getProducts(category);
-    });
-  }
-
-  Widget allProduct() {
+  Widget familyMembers() {
     return StreamBuilder(
       stream: todoStream,
       builder: (context, AsyncSnapshot snapshot) {
@@ -62,7 +55,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                                 hintText: 'Nome família',
                                 hintStyle: TextStyle(
                                   fontSize: 20,
-                                  color: Color(0xFF2B3649),
+                                  color: Color(0XFF707275),
                                 ),
                                 border: InputBorder.none,
                               ),
@@ -157,30 +150,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
                                                           ),
                                                         ),
                                                       ),
-                                                      TextButton(
-                                                        onPressed: () async {
-                                                          await DatabaseMethods()
-                                                              .deleteProductList(
-                                                                  category);
-                                                          setState(() {
-                                                            todoStream =
-                                                                null; // Limpa a lista após a exclusão
-                                                          });
-                                                          Navigator.of(context)
-                                                              .pop(); // Fecha o diálogo
-                                                          Navigator.of(context)
-                                                              .pop(); // Fecha o menu
-                                                        },
-                                                        child: const Text(
-                                                          "Excluir",
-                                                          style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                      ),
                                                     ],
                                                   ),
                                                 );
@@ -235,17 +204,12 @@ class _FamilyScreenState extends State<FamilyScreen> {
                         ],
                       ),
                     ),
-                    
                   ],
                 ),
               )
             : const CircularProgressIndicator();
       },
     );
-  }
-
-  Stream<DocumentSnapshot> get userStream {
-    return DatabaseMethods().getUserProfile().asStream();
   }
 
   TextEditingController todoController = TextEditingController();
@@ -290,7 +254,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 20.0),
-              allProduct(),
+              familyMembers(),
             ],
           ),
         ],
@@ -300,133 +264,32 @@ class _FamilyScreenState extends State<FamilyScreen> {
 
   //Adicionar membro da familia
   Future openBoxMembers() => showDialog(
-  context: context,
-  builder: (context) {
-    return AlertDialog(
-      title: const Text('Selecionar Usuário'),
-      content: SizedBox(
-        height: 300, // Define o tamanho da janela
-        width: double.maxFinite,
-        child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Users').snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(child: Text('Nenhum usuário registrado.'));
-            }
-            var users = snapshot.data!.docs;
-            return ListView.builder(
-              itemCount: users.length,
-              itemBuilder: (context, index) {
-                var user = users[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: user['avatarColor'] != null
-                          ? Color(int.parse(user['avatarColor']))
-                          : Colors.grey.shade300,
-                      child: Text(
-                        user['name'] != null && user['name'].isNotEmpty
-                            ? user['name'][0].toUpperCase()
-                            : '?',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    title: Text(user['name'] ?? 'Usuário sem nome'),
-                    onTap: () {
-                      // Adiciona o usuário à lista de membros da família
-                      addMemberToFamily(user);
-                      Navigator.of(context).pop(); // Fecha o popup
-                    },
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
-    );
-  },
-);
-
-void addMemberToFamily(DocumentSnapshot user) {
-  // Aqui você pode adicionar o usuário à lista de membros da família,
-  // pode ser um banco de dados ou uma lista em memória.
-  // Exemplo de como adicionar o usuário à Firestore:
-  
-  FirebaseFirestore.instance.collection('Family').doc('familyId').update({
-    'members': FieldValue.arrayUnion([user.id]),
-  }).then((value) {
-    // Se necessário, atualize o estado da UI após adicionar o membro
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Usuário adicionado à família!')),
-    );
-  }).catchError((error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Erro ao adicionar o usuário: $error')),
-    );
-  });
-}
-
-      Future<void> showFamilyMembers(String familyId) {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Membros da Família'),
-        content: SizedBox(
-          height: 300, // Define o tamanho da janela
-          width: double.maxFinite,
-          child: StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('Family')
-                .doc(familyId)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (!snapshot.hasData || !snapshot.data!.exists) {
-                return const Center(child: Text('Família não encontrada.'));
-              }
-
-              var familyData = snapshot.data!.data() as Map<String, dynamic>?;
-              var members = familyData?['members'] ?? [];
-
-              if (members.isEmpty) {
-                return const Center(child: Text('Nenhum membro na família.'));
-              }
-
-              return ListView.builder(
-                itemCount: members.length,
-                itemBuilder: (context, index) {
-                  return FutureBuilder<DocumentSnapshot>(
-                    future: FirebaseFirestore.instance
-                        .collection('Users')
-                        .doc(members[index])
-                        .get(),
-                    builder: (context, userSnapshot) {
-                      if (userSnapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-                        return const ListTile(
-                          title: Text('Usuário não encontrado'),
-                        );
-                      }
-
-                      var user = userSnapshot.data!;
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Selecionar Usuário'),
+            content: SizedBox(
+              height: 300, // Define o tamanho da janela
+              width: double.maxFinite,
+              child: StreamBuilder<QuerySnapshot>(
+                stream:
+                    FirebaseFirestore.instance.collection('Users').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(
+                        child: Text('Nenhum usuário registrado.'));
+                  }
+                  var users = snapshot.data!.docs;
+                  return ListView.builder(
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      var user = users[index];
                       return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
                         child: ListTile(
                           leading: CircleAvatar(
                             backgroundColor: user['avatarColor'] != null
@@ -444,18 +307,18 @@ void addMemberToFamily(DocumentSnapshot user) {
                             ),
                           ),
                           title: Text(user['name'] ?? 'Usuário sem nome'),
+                          onTap: () {
+                            // Adiciona o usuário à lista de membros da família
+                            Navigator.of(context).pop(); // Fecha o popup
+                          },
                         ),
                       );
                     },
                   );
                 },
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       );
-    },
-  );
-}
-
 }
