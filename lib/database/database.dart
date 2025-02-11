@@ -4,6 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 class DatabaseMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String userId = FirebaseAuth.instance.currentUser!.uid; // Obtém o UID do usuário autenticado
+  
+
+  // =============== FAMILIA ===============
+
+    
 
   // ========== PERFIL DO USUÁRIO ==========
 
@@ -16,7 +21,7 @@ class DatabaseMethods {
       await userDoc.set({
         'name': email, // Nome inicial baseado no e-mail
         'cpf': null,
-        'birthdate': null,
+        'birthdate': null,  
       });
     }
   }
@@ -91,7 +96,7 @@ class DatabaseMethods {
     await batch.commit();
   }
 
-  // ========== TAREFAS ==========
+  // ============ TAREFAS ============
 
   // Adicionar uma nova tarefa
   Future<void> addTask(DateTime date, String description) async {
@@ -133,4 +138,6 @@ class DatabaseMethods {
         .doc(taskId)
         .delete();
   }
+
+  
 }

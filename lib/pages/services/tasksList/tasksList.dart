@@ -459,6 +459,7 @@ class _TasksListState extends State<TasksList> {
                   ),
                 ),
               ),
+              
               ElevatedButton.icon(
                 onPressed: signUserOutWithEmailAndPassword,
                 icon: const Icon(Icons.logout, color: Colors.red),
