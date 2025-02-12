@@ -453,7 +453,16 @@ class _SupermarketState extends State<Supermarket> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const Text(
+                        'Adicionar Produto',
+                        style: TextStyle(
+                            color: Color(0xFF2B3649),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                      ),
+                      const Spacer(),
                       GestureDetector(
                         onTap: () {
                           Navigator.pop(context);
@@ -462,14 +471,6 @@ class _SupermarketState extends State<Supermarket> {
                           Icons.cancel,
                           color: Color(0xFF577096),
                         ),
-                      ),
-                      const SizedBox(width: 25.0),
-                      const Text(
-                        'Adicionar Produto',
-                        style: TextStyle(
-                            color: Color(0xFF2B3649),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
                       ),
                     ],
                   ),
@@ -512,25 +513,27 @@ class _SupermarketState extends State<Supermarket> {
                         Navigator.pop(context);
                       }
                     },
-                    child: Center(
-                      child: Container(
-                        width: 100,
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF577096),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Adicionar',
-                            style: TextStyle(
-                                color: Color(0xFFEDE8E8),
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 130.0),
+                        child: Container(
+                          width: 100,
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF577096),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Adicionar',
+                              style: TextStyle(
+                                  color: Color(0xFFEDE8E8),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    
                   )
                 ],
               ),

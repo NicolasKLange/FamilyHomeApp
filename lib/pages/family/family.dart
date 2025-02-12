@@ -12,32 +12,80 @@ class _FamilyScreenState extends State<FamilyScreen> {
   String? familyName;
   List<Map<String, dynamic>> members = [];
 
-  void _createFamily() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        TextEditingController controller = TextEditingController();
-        return AlertDialog(
-          title: Text("Criar Família"),
-          content: TextField(
-            controller: controller,
-            decoration: InputDecoration(hintText: "Nome da Família"),
-          ),
-          actions: [
-            TextButton(
+  void _createFamily() { 
+  showDialog(
+    context: context,
+    builder: (context) {
+      TextEditingController controller = TextEditingController();
+      return AlertDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Criar Família",
+              style: TextStyle(
+                color: Color(0xFF2B3649),
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.cancel, color: Color(0XFF577096),),
               onPressed: () {
-                setState(() {
-                  familyName = controller.text;
-                });
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Fecha o diálogo ao clicar
               },
-              child: Text("Criar"),
-            )
+            ),
           ],
-        );
-      },
-    );
-  }
+        ),
+        content: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black38, width: 2.0),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              hintText: "Nome da Família",
+            ),
+          ),
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              setState(
+                () {
+                  familyName = controller.text;
+                },
+              );
+              Navigator.of(context).pop();
+            },
+            child: Container(
+              width: 100,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: const Color(0XFF577096),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Center(
+                child: Text(
+                  "Criar",
+                  style: TextStyle(
+                    color: Color(0xFFEDE8E8),
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   void _deleteFamily() {
     setState(() {
@@ -55,13 +103,15 @@ class _FamilyScreenState extends State<FamilyScreen> {
           content: Container(
             width: double.maxFinite,
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('Users').snapshots(),
+              stream:
+                  FirebaseFirestore.instance.collection('Users').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('Nenhum usuário registrado.'));
+                  return const Center(
+                      child: Text('Nenhum usuário registrado.'));
                 }
                 var users = snapshot.data!.docs;
                 return ListView.builder(
@@ -90,8 +140,13 @@ class _FamilyScreenState extends State<FamilyScreen> {
                         icon: Icon(Icons.add),
                         onPressed: () {
                           setState(() {
-                            if (!members.any((m) => m['name'] == user['name'])) {
-                              members.add({'name': user['name'], 'avatarColor': user['avatarColor']});
+                            if (!members
+                                .any((m) => m['name'] == user['name'])) {
+                              members.add({
+                                'name': user['name'],
+                                'avatarColor':
+                                    user['avatarColor'] ?? '0xFFBDBDBD',
+                              });
                             }
                           });
                           Navigator.of(context).pop();
@@ -221,10 +276,16 @@ class _FamilyScreenState extends State<FamilyScreen> {
                                 final member = members[index];
                                 return ListTile(
                                   leading: CircleAvatar(
-                                    backgroundColor: member['avatarColor'] != null
-                                        ? Color(int.parse(member['avatarColor']))
+                                    backgroundColor: member['avatarColor'] !=
+                                            null
+                                        ? Color(
+                                            int.parse(member['avatarColor']))
                                         : Colors.grey,
-                                    child: Text(member['name'][0].toUpperCase(), style: TextStyle(color: const Color(0xFFEDE8E8)),),
+                                    child: Text(
+                                      member['name'][0].toUpperCase(),
+                                      style: TextStyle(
+                                          color: const Color(0xFFEDE8E8)),
+                                    ),
                                   ),
                                   title: Text(member['name']),
                                   trailing: IconButton(
