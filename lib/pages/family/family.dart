@@ -10,7 +10,7 @@ class FamilyScreen extends StatefulWidget {
 
 class _FamilyScreenState extends State<FamilyScreen> {
   String? familyName;
-  List<String> members = [];
+  List<Map<String, dynamic>> members = [];
 
   void _createFamily() {
     showDialog(
@@ -90,8 +90,8 @@ class _FamilyScreenState extends State<FamilyScreen> {
                         icon: Icon(Icons.add),
                         onPressed: () {
                           setState(() {
-                            if (!members.contains(user['name'])) {
-                              members.add(user['name']);
+                            if (!members.any((m) => m['name'] == user['name'])) {
+                              members.add({'name': user['name'], 'avatarColor': user['avatarColor']});
                             }
                           });
                           Navigator.of(context).pop();
@@ -220,8 +220,13 @@ class _FamilyScreenState extends State<FamilyScreen> {
                               itemBuilder: (context, index) {
                                 final member = members[index];
                                 return ListTile(
-                                  leading: CircleAvatar(child: Text(member[0])),
-                                  title: Text(member),
+                                  leading: CircleAvatar(
+                                    backgroundColor: member['avatarColor'] != null
+                                        ? Color(int.parse(member['avatarColor']))
+                                        : Colors.grey,
+                                    child: Text(member['name'][0].toUpperCase(), style: TextStyle(color: const Color(0xFFEDE8E8)),),
+                                  ),
+                                  title: Text(member['name']),
                                   trailing: IconButton(
                                     icon: Icon(Icons.delete),
                                     onPressed: () {
