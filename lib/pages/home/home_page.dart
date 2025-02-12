@@ -243,7 +243,7 @@ class FuncionalidadesScreen extends StatelessWidget {
             padding: const EdgeInsets.only(
               bottom: 10,
               top: 10,
-              left: 30,
+              left: 43,
               right: 30,
             ),
             decoration: BoxDecoration(
