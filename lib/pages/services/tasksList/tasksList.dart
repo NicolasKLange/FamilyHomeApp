@@ -37,16 +37,6 @@ class _TasksListState extends State<TasksList> {
             children: [
               Row(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Icon(
-                      Icons.cancel,
-                      color: Color(0xFF577096),
-                    ),
-                  ),
-                  const SizedBox(width: 25.0),
                   const Text(
                     'Adicionar Tarefa',
                     style: TextStyle(
@@ -55,21 +45,25 @@ class _TasksListState extends State<TasksList> {
                       fontSize: 18,
                     ),
                   ),
+                  const Spacer(),
+                  IconButton(
+                    icon: Icon(
+                      Icons.cancel,
+                      color: Color(0XFF577096),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Fecha o diálogo ao clicar
+                    },
+                  ),
                 ],
               ),
-              const SizedBox(height: 20.0),
-              const Text(
-                'Descrição',
-                style: TextStyle(
-                  color: Color(0xFF2B3649),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              const SizedBox(height: 5.0),
+              
               const SizedBox(height: 10.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black38, width: 2.0),
+                  border: Border.all(color: Color(0xFF2B3649), width: 2.0),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
@@ -89,7 +83,9 @@ class _TasksListState extends State<TasksList> {
                     Navigator.pop(context);
                   }
                 },
-                child: Center(
+                
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 130.0),
                   child: Container(
                     width: 100,
                     padding: const EdgeInsets.all(5),
@@ -323,11 +319,11 @@ class _TasksListState extends State<TasksList> {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Padding(
-              padding: const EdgeInsets.only(right: 15.0, left: 15.0, top: 10.0),
+              padding:
+                  const EdgeInsets.only(right: 15.0, left: 15.0, top: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  
                   const Text(
                     "Tarefas",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -459,7 +455,6 @@ class _TasksListState extends State<TasksList> {
                   ),
                 ),
               ),
-              
               ElevatedButton.icon(
                 onPressed: signUserOutWithEmailAndPassword,
                 icon: const Icon(Icons.logout, color: Colors.red),
@@ -513,4 +508,3 @@ extension StringExtension on String {
     return this[0].toUpperCase() + substring(1).toLowerCase();
   }
 }
- 

@@ -12,80 +12,210 @@ class _FamilyScreenState extends State<FamilyScreen> {
   String? familyName;
   List<Map<String, dynamic>> members = [];
 
-  void _createFamily() { 
-  showDialog(
-    context: context,
-    builder: (context) {
-      TextEditingController controller = TextEditingController();
-      return AlertDialog(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Criar Família",
-              style: TextStyle(
-                color: Color(0xFF2B3649),
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+  //Funação para excluir família
+  void _showMenuOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          height: 200,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.cancel,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.cancel, color: Color(0XFF577096),),
-              onPressed: () {
-                Navigator.of(context).pop(); // Fecha o diálogo ao clicar
-              },
-            ),
-          ],
-        ),
-        content: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black38, width: 2.0),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              hintText: "Nome da Família",
-            ),
-          ),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              setState(
-                () {
-                  familyName = controller.text;
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text(
+                        "Confirmar Exclusão",
+                        style: TextStyle(
+                          color: Color(0xFF2B3649),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      backgroundColor: const Color(0xFFEDE8E8),
+                      content: const Text(
+                        "Você realmente deseja excluir esta família?",
+                        style: TextStyle(
+                          color: Color(0xFF2B3649),
+                          fontSize: 15,
+                        ),
+                      ),
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Fecha o diálogo
+                              },
+                              child: const Text(
+                                "Cancelar",
+                                style: TextStyle(
+                                  color: Color(0xFF2B3649),
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                _deleteFamily();
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 15),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF577096),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Text(
+                                  'Excluir',
+                                  style: TextStyle(
+                                    color: Color(0xFFEDE8E8),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
                 },
-              );
-              Navigator.of(context).pop();
-            },
-            child: Container(
-              width: 100,
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: const Color(0XFF577096),
-                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    border: Border.all(color: Colors.red),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.delete, color: Colors.red),
+                      SizedBox(width: 10),
+                      Text(
+                        "Excluir família",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              child: const Center(
-                child: Text(
-                  "Criar",
-                  style: TextStyle(
-                    color: Color(0xFFEDE8E8),
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+              const Spacer(),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _createFamily() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController controller = TextEditingController();
+        return AlertDialog(
+          title: Row(
+            children: [
+              Text(
+                "Criar Família",
+                style: TextStyle(
+                  color: Color(0xFF2B3649),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                icon: Icon(
+                  Icons.cancel,
+                  color: Color(0XFF577096),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fecha o diálogo ao clicar
+                },
+              ),
+            ],
+          ),
+          content: Container(
+            padding: const EdgeInsets.only(left: 10.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black38, width: 2.0),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: "Nome da Família",
+              ),
+            ),
+          ),
+          actions: [
+            GestureDetector(
+              onTap: () {
+                setState(
+                  () {
+                    familyName = controller.text;
+                  },
+                );
+                Navigator.of(context).pop();
+              },
+              child: Container(
+                width: 100,
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: const Color(0XFF577096),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Center(
+                  child: Text(
+                    "Criar",
+                    style: TextStyle(
+                      color: Color(0xFFEDE8E8),
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      );
-    },
-  );
-}
-
+          ],
+        );
+      },
+    );
+  }
 
   void _deleteFamily() {
     setState(() {
@@ -99,7 +229,13 @@ class _FamilyScreenState extends State<FamilyScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Adicionar Membro"),
+          title: Text(
+            "Adicionar Membro",
+            style: TextStyle(
+              color: Color(0xFF2B3649),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           content: Container(
             width: double.maxFinite,
             child: StreamBuilder<QuerySnapshot>(
@@ -135,7 +271,12 @@ class _FamilyScreenState extends State<FamilyScreen> {
                           ),
                         ),
                       ),
-                      title: Text(user['name'] ?? 'Usuário sem nome'),
+                      title: Text(
+                        user['name'] ?? 'Usuário sem nome',
+                        style: TextStyle(
+                            color: Color(0xFF2B3649),
+                            fontWeight: FontWeight.w500),
+                      ),
                       trailing: IconButton(
                         icon: Icon(Icons.add),
                         onPressed: () {
@@ -213,91 +354,78 @@ class _FamilyScreenState extends State<FamilyScreen> {
                       ],
                     )
                   : Column(
+                      //Lista dos membros da familia
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
-                            bottom: 10,
-                            top: 20,
-                            left: 30,
-                            right: 30,
-                          ),
+                              bottom: 10, top: 20, left: 30, right: 30),
                           child: Container(
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: const Color(0xFFEDE8E8),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                   color: const Color(0xFF2B3649), width: 2),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 10, top: 10, bottom: 7),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      familyName!,
-                                      style: TextStyle(fontSize: 18),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 15,
                                     ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.add,
-                                        color: Color(0xFF2B3649)),
-                                    onPressed: _addMember,
-                                  ),
-                                  PopupMenuButton(
-                                    onSelected: (value) {
-                                      if (value == 'delete') {
-                                        _deleteFamily();
-                                      }
-                                    },
-                                    itemBuilder: (context) => [
-                                      PopupMenuItem(
-                                        value: 'delete',
-                                        child: Text('Excluir Família'),
+                                    Expanded(
+                                      //Nome da familia
+                                      child: Text(
+                                        familyName!,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: 10,
-                              top: 10,
-                              left: 23,
-                              right: 20,
-                            ),
-                            child: ListView.builder(
-                              itemCount: members.length,
-                              itemBuilder: (context, index) {
-                                final member = members[index];
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: member['avatarColor'] !=
-                                            null
-                                        ? Color(
-                                            int.parse(member['avatarColor']))
-                                        : Colors.grey,
-                                    child: Text(
-                                      member['name'][0].toUpperCase(),
-                                      style: TextStyle(
-                                          color: const Color(0xFFEDE8E8)),
                                     ),
-                                  ),
-                                  title: Text(member['name']),
-                                  trailing: IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      setState(() {
-                                        members.removeAt(index);
-                                      });
-                                    },
-                                  ),
-                                );
-                              },
+                                    IconButton(
+                                      icon: Icon(Icons.add,
+                                          color: Color(0xFF2B3649)),
+                                      onPressed: _addMember,
+                                    ),
+                                    GestureDetector(
+                                      onTap: _showMenuOptions,
+                                      child: const Icon(
+                                        Icons.more_vert,
+                                        color: Color(0xFF2B3649),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                ...members.map((member) => ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: Color(
+                                            int.parse(member['avatarColor'])),
+                                        child: Text(
+                                          member['name'][0].toUpperCase(),
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        member['name'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      trailing: IconButton(
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Color(0xFF2B3649),
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            members.remove(member);
+                                          });
+                                        },
+                                      ),
+                                    )),
+                              ],
                             ),
                           ),
                         ),

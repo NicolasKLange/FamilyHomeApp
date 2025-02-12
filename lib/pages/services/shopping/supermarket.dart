@@ -160,14 +160,33 @@ class _SupermarketState extends State<Supermarket> {
                                                           Navigator.of(context)
                                                               .pop(); // Fecha o menu
                                                         },
-                                                        child: const Text(
-                                                          "Excluir",
-                                                          style: TextStyle(
-                                                              color: Colors.red,
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 5,
+                                                                  horizontal:
+                                                                      15),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: const Color(
+                                                                0xFF577096),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          child: const Text(
+                                                            'Excluir',
+                                                            style: TextStyle(
+                                                              color: Color(
+                                                                  0xFFEDE8E8),
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .bold),
+                                                                      .bold,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ],
@@ -475,12 +494,6 @@ class _SupermarketState extends State<Supermarket> {
                     ],
                   ),
                   const SizedBox(height: 20.0),
-                  const Text(
-                    'Descrição',
-                    style: TextStyle(
-                        color: Color(0xFF2B3649), fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10.0),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     decoration: BoxDecoration(
@@ -513,27 +526,26 @@ class _SupermarketState extends State<Supermarket> {
                         Navigator.pop(context);
                       }
                     },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 130.0),
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF577096),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Adicionar',
-                              style: TextStyle(
-                                  color: Color(0xFFEDE8E8),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 130.0),
+                      child: Container(
+                        width: 100,
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF577096),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Adicionar',
+                            style: TextStyle(
+                                color: Color(0xFFEDE8E8),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
-                    
+                    ),
                   )
                 ],
               ),

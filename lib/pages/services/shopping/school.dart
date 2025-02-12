@@ -28,7 +28,7 @@ class _SchoolState extends State<School> {
     super.initState();
   }
 
-   Widget allProduct() {
+  Widget allProduct() {
     return StreamBuilder(
       stream: todoStream,
       builder: (context, AsyncSnapshot snapshot) {
@@ -157,14 +157,33 @@ class _SchoolState extends State<School> {
                                                           Navigator.of(context)
                                                               .pop(); // Fecha o menu
                                                         },
-                                                        child: const Text(
-                                                          "Excluir",
-                                                          style: TextStyle(
-                                                              color: Colors.red,
+                                                        child: Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 5,
+                                                                  horizontal:
+                                                                      15),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: const Color(
+                                                                0xFF577096),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          child: const Text(
+                                                            'Excluir',
+                                                            style: TextStyle(
+                                                              color: Color(
+                                                                  0xFFEDE8E8),
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .bold),
+                                                                      .bold,
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ],
@@ -255,9 +274,9 @@ class _SchoolState extends State<School> {
   }
 
   Stream<DocumentSnapshot> get userStream {
-  return DatabaseMethods().getUserProfile().asStream();
-}
-  
+    return DatabaseMethods().getUserProfile().asStream();
+  }
+
   TextEditingController todoController = TextEditingController();
 
   @override
@@ -311,8 +330,8 @@ class _SchoolState extends State<School> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin: const EdgeInsets.only(
-                right: 30, left: 30, top: 30, bottom: 10),
+            margin:
+                const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 10),
             padding: const EdgeInsets.only(bottom: 10, top: 10, left: 30),
             decoration: BoxDecoration(
               color: const Color(0xFFEDE8E8),
@@ -440,7 +459,7 @@ class _SchoolState extends State<School> {
       );
     }
   }
-  
+
   Future openBox() => showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -472,12 +491,6 @@ class _SchoolState extends State<School> {
                     ],
                   ),
                   const SizedBox(height: 20.0),
-                  const Text(
-                    'Descrição',
-                    style: TextStyle(
-                        color: Color(0xFF2B3649), fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10.0),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     decoration: BoxDecoration(
@@ -510,27 +523,26 @@ class _SchoolState extends State<School> {
                         Navigator.pop(context);
                       }
                     },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 130.0),
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF577096),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Adicionar',
-                              style: TextStyle(
-                                  color: Color(0xFFEDE8E8),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 130.0),
+                      child: Container(
+                        width: 100,
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF577096),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Adicionar',
+                            style: TextStyle(
+                                color: Color(0xFFEDE8E8),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
-                    
+                    ),
                   )
                 ],
               ),

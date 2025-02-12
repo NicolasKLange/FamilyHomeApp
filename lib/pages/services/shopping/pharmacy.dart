@@ -157,15 +157,22 @@ class _PharmacyState extends State<Pharmacy> {
                                                           Navigator.of(context)
                                                               .pop(); // Fecha o menu
                                                         },
-                                                        child: const Text(
-                                                          "Excluir",
-                                                          style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
+                                                        child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 15),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF577096),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Text(
+                                  'Excluir',
+                                  style: TextStyle(
+                                    color: Color(0xFFEDE8E8),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                                                       ),
                                                     ],
                                                   ),
@@ -473,12 +480,6 @@ class _PharmacyState extends State<Pharmacy> {
                     ],
                   ),
                   const SizedBox(height: 20.0),
-                  const Text(
-                    'Descrição',
-                    style: TextStyle(
-                        color: Color(0xFF2B3649), fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10.0),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     decoration: BoxDecoration(
