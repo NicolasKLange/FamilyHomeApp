@@ -3,12 +3,64 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class DatabaseMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String userId = FirebaseAuth.instance.currentUser!.uid; // Obtém o UID do usuário autenticado
-  
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
 
-  // =============== FAMILIA ===============
+  // =============== FAMÍLIA ===============
 
-    
+  // Criar uma nova família
+  Future<String> createFamily(String familyName) async {
+    DocumentReference familyDoc = await _firestore.collection('Families').add({
+      'nome': familyName,
+    });
+
+    String familyId = familyDoc.id;
+
+    // Atualiza o usuário atual com o idFamilia
+    await _firestore.collection('Users').doc(userId).update({
+      'idFamilia': familyId,
+    });
+
+    return familyId;
+  }
+
+  // Adicionar um membro à família
+  Future<void> addMemberToFamily(String userId, String familyId) async {
+    await _firestore.collection('Users').doc(userId).update({
+      'idFamilia': familyId,
+    });
+  }
+
+  // Obter informações da família
+  Future<DocumentSnapshot> getFamily(String familyId) async {
+    return await _firestore.collection('Families').doc(familyId).get();
+  }
+
+  // Excluir uma família (e remover idFamilia dos membros)
+  Future<void> deleteFamily(String familyId) async {
+    // Remove o idFamilia de todos os membros antes de excluir a família
+    QuerySnapshot usersInFamily = await _firestore
+        .collection('Users')
+        .where('idFamilia', isEqualTo: familyId)
+        .get();
+
+    for (var user in usersInFamily.docs) {
+      await user.reference.update({'idFamilia': null});
+    }
+
+    // Exclui a família do banco de dados
+    await _firestore.collection('Families').doc(familyId).delete();
+  }
+
+  // Método para recuperar o ID da família associado ao usuário
+Future<String?> getFamilyId() async {
+  DocumentSnapshot userDoc = await _firestore.collection('Users').doc(userId).get();
+
+  if (userDoc.exists) {
+    return userDoc['idFamilia'];  // Retorna o ID da família
+  } else {
+    return null;  // Caso o usuário não tenha um ID de família
+  }
+}
 
   // ========== PERFIL DO USUÁRIO ==========
 
@@ -21,7 +73,8 @@ class DatabaseMethods {
       await userDoc.set({
         'name': email, // Nome inicial baseado no e-mail
         'cpf': null,
-        'birthdate': null,  
+        'birthdate': null,
+        'idFamilia': null, // Inicialmente sem família
       });
     }
   }

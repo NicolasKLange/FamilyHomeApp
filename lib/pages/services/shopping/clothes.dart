@@ -158,21 +158,33 @@ class _ClothesState extends State<Clothes> {
                                                               .pop(); // Fecha o menu
                                                         },
                                                         child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 15),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF577096),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Text(
-                                  'Excluir',
-                                  style: TextStyle(
-                                    color: Color(0xFFEDE8E8),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 5,
+                                                                  horizontal:
+                                                                      15),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: const Color(
+                                                                0xFF577096),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          child: const Text(
+                                                            'Excluir',
+                                                            style: TextStyle(
+                                                              color: Color(
+                                                                  0xFFEDE8E8),
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
@@ -511,27 +523,26 @@ class _ClothesState extends State<Clothes> {
                         Navigator.pop(context);
                       }
                     },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 130.0),
-                        child: Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF577096),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Adicionar',
-                              style: TextStyle(
-                                  color: Color(0xFFEDE8E8),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 130.0),
+                      child: Container(
+                        width: 100,
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF577096),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Adicionar',
+                            style: TextStyle(
+                                color: Color(0xFFEDE8E8),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
-                    
+                    ),
                   )
                 ],
               ),

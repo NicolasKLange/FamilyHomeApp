@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../database/database.dart';
 
 class FamilyScreen extends StatefulWidget {
   const FamilyScreen({super.key});
@@ -11,6 +14,56 @@ class FamilyScreen extends StatefulWidget {
 class _FamilyScreenState extends State<FamilyScreen> {
   String? familyName;
   List<Map<String, dynamic>> members = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFamilyData();
+  }
+
+  Future<void> _loadFamilyData() async {
+  User? user = FirebaseAuth.instance.currentUser;
+
+  if (user != null) {
+    String userId = user.uid; // Obtém o ID do usuário
+
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .get();
+
+    if (userDoc.exists && userDoc['idFamilia'] != null) {
+      String familyId = userDoc['idFamilia'];
+
+      DocumentSnapshot familyDoc = await FirebaseFirestore.instance
+          .collection('Families')
+          .doc(familyId)
+          .get();
+
+      if (familyDoc.exists) {
+        setState(() {
+          familyName = familyDoc['nome'];
+        });
+
+        // Agora buscamos os membros da família
+        QuerySnapshot membersSnapshot = await FirebaseFirestore.instance
+            .collection('Users')
+            .where('idFamilia', isEqualTo: familyId)
+            .get();
+
+        setState(() {
+          members = membersSnapshot.docs.map((doc) {
+            return {
+              'name': doc['name'] ?? 'Usuário sem nome',
+              'avatarColor': doc['avatarColor'] ?? '0xFFBDBDBD',
+            };
+          }).toList();
+        });
+      }
+    }
+  }
+}
+
 
   //Funação para excluir família
   void _showMenuOptions() {
@@ -140,11 +193,12 @@ class _FamilyScreenState extends State<FamilyScreen> {
     );
   }
 
-  void _createFamily() {
+  void _createFamily() async {
+    TextEditingController controller = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) {
-        TextEditingController controller = TextEditingController();
         return AlertDialog(
           title: Row(
             children: [
@@ -184,13 +238,20 @@ class _FamilyScreenState extends State<FamilyScreen> {
           ),
           actions: [
             GestureDetector(
-              onTap: () {
-                setState(
-                  () {
-                    familyName = controller.text;
-                  },
-                );
-                Navigator.of(context).pop();
+              onTap: () async {
+                String familyName = controller.text;
+
+                // Cria a família no Firestore
+                String familyId =
+                    await DatabaseMethods().createFamily(familyName);
+
+                // Atualiza o estado local com o nome da família e membros vazios
+                setState(() {
+                  this.familyName = familyName;
+                  members = []; // Inicializa com uma lista vazia
+                });
+
+                Navigator.of(context).pop(); // Fecha o diálogo
               },
               child: Container(
                 width: 100,
@@ -217,11 +278,30 @@ class _FamilyScreenState extends State<FamilyScreen> {
     );
   }
 
-  void _deleteFamily() {
-    setState(() {
-      familyName = null;
-      members.clear();
-    });
+  void _deleteFamily() async {
+    // Verifica se o ID da família está disponível
+    String? familyId = await DatabaseMethods().getFamilyId();
+
+    if (familyId != null) {
+      // Chama o método deleteFamily para remover a família do Firestore
+      await DatabaseMethods().deleteFamily(familyId);
+
+      // Limpa as informações no estado local
+      setState(() {
+        familyName = null;
+        members.clear();
+      });
+
+      // Feedback para o usuário
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Família excluída com sucesso!')),
+      );
+    } else {
+      // Caso o usuário não tenha uma família associada
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Você não está associado a uma família')),
+      );
+    }
   }
 
   void _addMember() {
@@ -274,12 +354,14 @@ class _FamilyScreenState extends State<FamilyScreen> {
                       title: Text(
                         user['name'] ?? 'Usuário sem nome',
                         style: TextStyle(
-                            color: Color(0xFF2B3649),
-                            fontWeight: FontWeight.w500),
+                          color: Color(0xFF2B3649),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       trailing: IconButton(
                         icon: Icon(Icons.add),
-                        onPressed: () {
+                        onPressed: () async {
+                          // Verifica se o membro já foi adicionado
                           setState(() {
                             if (!members
                                 .any((m) => m['name'] == user['name'])) {
@@ -290,6 +372,30 @@ class _FamilyScreenState extends State<FamilyScreen> {
                               });
                             }
                           });
+
+                          // Recupera o ID da família (supondo que você tenha esse ID)
+                          String? familyId =
+                              await DatabaseMethods().getFamilyId();
+
+                          if (familyId != null) {
+                            // Adiciona o membro à família no banco de dados
+                            await DatabaseMethods()
+                                .addMemberToFamily(user.id, familyId);
+
+                            // Exibe mensagem de sucesso
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      '${user['name']} adicionado à família')),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      'Você não está associado a uma família')),
+                            );
+                          }
+
                           Navigator.of(context).pop();
                         },
                       ),
