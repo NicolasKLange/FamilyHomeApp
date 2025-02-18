@@ -309,42 +309,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
     }
   }
 
-  void _deleteMember(String memberId) async {
-    // Obtém o ID da família
-    String? familyId = await DatabaseMethods().getFamilyId();
-
-    if (familyId != null) {
-      try {
-        // Acesse a coleção correta e remova o membro
-        await FirebaseFirestore.instance
-            .collection('Families')
-            .doc(familyId)
-            .collection('Members')
-            .doc(memberId)
-            .delete();
-
-        // Atualiza a lista removendo o membro localmente
-        setState(() {
-          members.removeWhere((member) => member['id'] == memberId);
-        });
-
-        // Feedback para o usuário
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Membro removido com sucesso!')),
-        );
-      } catch (e) {
-        // Caso ocorra um erro
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao remover membro: $e')),
-        );
-      }
-    } else {
-      // Caso o usuário não tenha uma família associada
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Você não está associado a uma família')),
-      );
-    }
-  }
 
   void _addMember() {
     showDialog(
