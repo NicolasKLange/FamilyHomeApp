@@ -22,48 +22,53 @@ class _FamilyScreenState extends State<FamilyScreen> {
   }
 
   Future<void> _loadFamilyData() async {
-  User? user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
 
-  if (user != null) {
-    String userId = user.uid; // Obtém o ID do usuário
+    if (user != null) {
+      String userId = user.uid; // Obtém o ID do usuário
 
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(userId)
-        .get();
-
-    if (userDoc.exists && userDoc['idFamilia'] != null) {
-      String familyId = userDoc['idFamilia'];
-
-      DocumentSnapshot familyDoc = await FirebaseFirestore.instance
-          .collection('Families')
-          .doc(familyId)
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
           .get();
 
-      if (familyDoc.exists) {
-        setState(() {
-          familyName = familyDoc['nome'];
-        });
+      if (userDoc.exists && userDoc['idFamilia'] != null) {
+        String familyId = userDoc['idFamilia'];
 
-        // Agora buscamos os membros da família
-        QuerySnapshot membersSnapshot = await FirebaseFirestore.instance
-            .collection('Users')
-            .where('idFamilia', isEqualTo: familyId)
+        DocumentSnapshot familyDoc = await FirebaseFirestore.instance
+            .collection('Families')
+            .doc(familyId)
             .get();
 
-        setState(() {
-          members = membersSnapshot.docs.map((doc) {
-            return {
-              'name': doc['name'] ?? 'Usuário sem nome',
-              'avatarColor': doc['avatarColor'] ?? '0xFFBDBDBD',
-            };
-          }).toList();
-        });
+        if (familyDoc.exists) {
+          setState(() {
+            familyName = familyDoc['nome'];
+          });
+
+          // Agora buscamos os membros da família
+          QuerySnapshot membersSnapshot = await FirebaseFirestore.instance
+              .collection('Users')
+              .where('idFamilia', isEqualTo: familyId)
+              .get();
+
+          for (var doc in membersSnapshot.docs) {
+            print("ID: ${doc.id}, Data: ${doc.data()}");
+          }
+
+          setState(() {
+            members = membersSnapshot.docs.map((doc) {
+              return {
+                'id': doc.id, // Adiciona o ID do usuário
+                'name': doc['name'] ?? 'Usuário sem nome',
+                'avatarColor': doc['avatarColor'] ?? '0xFFBDBDBD',
+              };
+            }).toList();
+          });
+        }
+        print("Lista de membros: $members");
       }
     }
   }
-}
-
 
   //Funação para excluir família
   void _showMenuOptions() {
@@ -304,6 +309,43 @@ class _FamilyScreenState extends State<FamilyScreen> {
     }
   }
 
+  void _deleteMember(String memberId) async {
+    // Obtém o ID da família
+    String? familyId = await DatabaseMethods().getFamilyId();
+
+    if (familyId != null) {
+      try {
+        // Acesse a coleção correta e remova o membro
+        await FirebaseFirestore.instance
+            .collection('Families')
+            .doc(familyId)
+            .collection('Members')
+            .doc(memberId)
+            .delete();
+
+        // Atualiza a lista removendo o membro localmente
+        setState(() {
+          members.removeWhere((member) => member['id'] == memberId);
+        });
+
+        // Feedback para o usuário
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Membro removido com sucesso!')),
+        );
+      } catch (e) {
+        // Caso ocorra um erro
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao remover membro: $e')),
+        );
+      }
+    } else {
+      // Caso o usuário não tenha uma família associada
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Você não está associado a uma família')),
+      );
+    }
+  }
+
   void _addMember() {
     showDialog(
       context: context,
@@ -395,7 +437,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
                                       'Você não está associado a uma família')),
                             );
                           }
-
                           Navigator.of(context).pop();
                         },
                       ),
@@ -460,7 +501,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
                       ],
                     )
                   : Column(
-                      //Lista dos membros da familia
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
@@ -482,7 +522,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
                                       width: 15,
                                     ),
                                     Expanded(
-                                      //Nome da familia
                                       child: Text(
                                         familyName!,
                                         style: TextStyle(
@@ -505,32 +544,76 @@ class _FamilyScreenState extends State<FamilyScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 10),
-                                ...members.map((member) => ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundColor: Color(
-                                            int.parse(member['avatarColor'])),
-                                        child: Text(
-                                          member['name'][0].toUpperCase(),
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                      title: Text(
-                                        member['name'],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      trailing: IconButton(
-                                        icon: Icon(
-                                          Icons.delete,
-                                          color: Color(0xFF2B3649),
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            members.remove(member);
-                                          });
+                                // Aqui vem a lógica de exibição dos membros
+                                FutureBuilder<List<Map<String, dynamic>>>(
+                                  future:
+                                      _getFamilyMembers(), // Método para buscar membros
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    } else if (snapshot.hasError) {
+                                      return Center(
+                                          child: Text(
+                                              "Erro ao carregar membros."));
+                                    } else if (!snapshot.hasData ||
+                                        snapshot.data!.isEmpty) {
+                                      return Center(
+                                          child: Text(
+                                              "Nenhum membro encontrado."));
+                                    } else {
+                                      // Exibe a lista de membros
+                                      var members = snapshot.data!;
+                                      return ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: members.length,
+                                        itemBuilder: (context, index) {
+                                          var member = members[index];
+                                          return ListTile(
+                                            leading: CircleAvatar(
+                                              backgroundColor: Color(int.parse(
+                                                  member['avatarColor'])),
+                                              child: Text(
+                                                member['name'][0].toUpperCase(),
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                            title: Text(
+                                              member['name'],
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            subtitle: Text(member['id'] ??
+                                                'ID não encontrado'),
+                                            trailing: IconButton(
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: Color(0xFF2B3649),
+                                              ),
+                                              onPressed: () async {
+                                                await DatabaseMethods()
+                                                    .removeMemberToFamily(
+                                                        member['id']);
+                                                setState(() {
+                                                  members.removeAt(index);
+                                                });
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        '${member['name']} foi excluído da família.'),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
                                         },
-                                      ),
-                                    )),
+                                      );
+                                    }
+                                  },
+                                ),
                               ],
                             ),
                           ),
@@ -542,5 +625,14 @@ class _FamilyScreenState extends State<FamilyScreen> {
         ],
       ),
     );
+  }
+
+  Future<List<Map<String, dynamic>>> _getFamilyMembers() async {
+    String? familyId = await DatabaseMethods().getFamilyId();
+    if (familyId != null) {
+      return await DatabaseMethods().getFamilyMembers(familyId);
+    } else {
+      return [];
+    }
   }
 }

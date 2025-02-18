@@ -27,11 +27,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _initializeProfile();
   }
-
+final String userId = FirebaseAuth.instance.currentUser!.uid;
   Future<void> _initializeProfile() async {
-    await _userDatabase.initializeUserProfile(user!.email!);
+    await _userDatabase.initializeUserProfile(user!.email!, userId);
 
-    final userProfile = await _userDatabase.getUserProfile();
+    final userProfile = await _userDatabase.getUserProfile(userId);
     setState(() {
       nameController.text = userProfile['name'] ?? '';
       cpfController.text = userProfile['cpf'] ?? '';

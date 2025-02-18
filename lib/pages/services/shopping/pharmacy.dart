@@ -261,8 +261,10 @@ class _PharmacyState extends State<Pharmacy> {
     );
   }
 
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+
   Stream<DocumentSnapshot> get userStream {
-    return DatabaseMethods().getUserProfile().asStream();
+    return DatabaseMethods().getUserProfile(userId).asStream();
   }
 
   TextEditingController todoController = TextEditingController();

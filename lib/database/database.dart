@@ -52,20 +52,37 @@ class DatabaseMethods {
   }
 
   // Método para recuperar o ID da família associado ao usuário
-Future<String?> getFamilyId() async {
-  DocumentSnapshot userDoc = await _firestore.collection('Users').doc(userId).get();
+  Future<String?> getFamilyId() async {
+    DocumentSnapshot userDoc =
+        await _firestore.collection('Users').doc(userId).get();
 
-  if (userDoc.exists) {
-    return userDoc['idFamilia'];  // Retorna o ID da família
-  } else {
-    return null;  // Caso o usuário não tenha um ID de família
+    if (userDoc.exists) {
+      return userDoc['idFamilia']; // Retorna o ID da família
+    } else {
+      return null; // Caso o usuário não tenha um ID de família
+    }
   }
+
+  Future<List<Map<String, dynamic>>> getFamilyMembers(String familyId) async {
+  QuerySnapshot membersSnapshot = await _firestore
+      .collection('Users')
+      .where('idFamilia', isEqualTo: familyId)
+      .get();
+
+  return membersSnapshot.docs.map((doc) {
+    return {
+      'id': doc.id,           // ID do documento (usuário)
+      'name': doc['name'],     // Nome do membro
+      'avatarColor': doc['avatarColor'] ?? 'defaultColor',  // Cor do avatar (caso tenha)
+    };
+  }).toList();
 }
+
 
   // ========== PERFIL DO USUÁRIO ==========
 
   // Inicializar o perfil do usuário ao criar conta
-  Future<void> initializeUserProfile(String email) async {
+  Future<void> initializeUserProfile(String email, String userId) async {
     final userDoc = _firestore.collection('Users').doc(userId);
     final docSnapshot = await userDoc.get();
 
@@ -75,12 +92,14 @@ Future<String?> getFamilyId() async {
         'cpf': null,
         'birthdate': null,
         'idFamilia': null, // Inicialmente sem família
+        'id': userId, // Adiciona o id
       });
     }
   }
 
   // Atualizar informações do perfil do usuário
-  Future<void> updateUserProfile(String name, String? cpf, String? birthdate) async {
+  Future<void> updateUserProfile(
+      String name, String? cpf, String? birthdate, String userId) async {
     final userDoc = _firestore.collection('Users').doc(userId);
     await userDoc.update({
       'name': name,
@@ -90,8 +109,39 @@ Future<String?> getFamilyId() async {
   }
 
   // Obter informações do perfil do usuário
-  Future<DocumentSnapshot> getUserProfile() async {
+  Future<DocumentSnapshot> getUserProfile(String userId) async {
     return await _firestore.collection('Users').doc(userId).get();
+  }
+
+  // Remover membro da família e definir idFamilia como null
+  Future<void> removeMemberFromFamily(String userId) async {
+    // Atualiza o idFamilia do usuário para null
+    await _firestore.collection('Users').doc(userId).update({
+      'idFamilia': null,
+    });
+  }
+
+  // Remover membro da família e exibir mensagem de exclusão
+  Future<void> removeMemberToFamily(String userId) async {
+    DocumentSnapshot userDoc =
+        await _firestore.collection('Users').doc(userId).get();
+
+    if (userDoc.exists) {
+      String userName = userDoc['name'];
+
+      // Define idFamilia como null para remover da família
+      await _firestore.collection('Users').doc(userId).update({
+        'idFamilia': null,
+      });
+
+      // Salvar notificação da remoção (Opcional: pode ser armazenado em um log)
+      await _firestore.collection('Notifications').add({
+        'message': '$userName foi excluído da família.',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      print('$userName foi excluído da família.');
+    }
   }
 
   // ========== LISTA DE COMPRAS ==========
@@ -191,6 +241,4 @@ Future<String?> getFamilyId() async {
         .doc(taskId)
         .delete();
   }
-
-  
 }
