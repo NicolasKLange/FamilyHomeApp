@@ -25,7 +25,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      String userId = user.uid; // Obtém o ID do usuário
+      String userId = user.uid; // Obtém ID do usuário
 
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('Users')
@@ -45,7 +45,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
             familyName = familyDoc['nome'];
           });
 
-          // Agora buscamos os membros da família
+          // Busca os membros da família
           QuerySnapshot membersSnapshot = await FirebaseFirestore.instance
               .collection('Users')
               .where('idFamilia', isEqualTo: familyId)
@@ -58,7 +58,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
           setState(() {
             members = membersSnapshot.docs.map((doc) {
               return {
-                'id': doc.id, // Adiciona o ID do usuário
+                'id': doc.id,
                 'name': doc['name'] ?? 'Usuário sem nome',
                 'avatarColor': doc['avatarColor'] ?? '0xFFBDBDBD',
               };
@@ -70,7 +70,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
     }
   }
 
-  //Funação para excluir família
+  //Função para excluir família
   void _showMenuOptions() {
     showModalBottomSheet(
       context: context,
@@ -127,7 +127,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                           children: [
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop(); // Fecha o diálogo
+                                Navigator.of(context).pop();
                               },
                               child: const Text(
                                 "Cancelar",
@@ -222,7 +222,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
                   color: Color(0XFF577096),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo ao clicar
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -253,10 +253,10 @@ class _FamilyScreenState extends State<FamilyScreen> {
                 // Atualiza o estado local com o nome da família e membros vazios
                 setState(() {
                   this.familyName = familyName;
-                  members = []; // Inicializa com uma lista vazia
+                  members = []; // Inicializa com uma lista de membros vazia
                 });
 
-                Navigator.of(context).pop(); // Fecha o diálogo
+                Navigator.of(context).pop();
               },
               child: Container(
                 width: 100,
@@ -296,19 +296,15 @@ class _FamilyScreenState extends State<FamilyScreen> {
         familyName = null;
         members.clear();
       });
-
-      // Feedback para o usuário
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Família excluída com sucesso!')),
       );
     } else {
-      // Caso o usuário não tenha uma família associada
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Você não está associado a uma família')),
       );
     }
   }
-
 
   void _addMember() {
     showDialog(
@@ -341,11 +337,15 @@ class _FamilyScreenState extends State<FamilyScreen> {
                   itemCount: users.length,
                   itemBuilder: (context, index) {
                     var user = users[index];
+                    bool isUserInFamily = user['idFamilia'] != null;
+
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: user['avatarColor'] != null
-                            ? Color(int.parse(user['avatarColor']))
-                            : Colors.grey.shade300,
+                        backgroundColor: isUserInFamily
+                            // Muda a cor do avatar para cinza
+                            ? Colors.grey.shade300
+                            : Color(
+                                int.parse(user['avatarColor'] ?? '0xFFBDBDBD')),
                         child: Text(
                           user['name'] != null && user['name'].isNotEmpty
                               ? user['name'][0].toUpperCase()
@@ -360,49 +360,58 @@ class _FamilyScreenState extends State<FamilyScreen> {
                       title: Text(
                         user['name'] ?? 'Usuário sem nome',
                         style: TextStyle(
-                          color: Color(0xFF2B3649),
+                          color: isUserInFamily
+                              ? Colors.grey.shade500
+                              : Color(0xFF2B3649),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       trailing: IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () async {
-                          // Verifica se o membro já foi adicionado
-                          setState(() {
-                            if (!members
-                                .any((m) => m['name'] == user['name'])) {
-                              members.add({
-                                'name': user['name'],
-                                'avatarColor':
-                                    user['avatarColor'] ?? '0xFFBDBDBD',
-                              });
-                            }
-                          });
+                        icon: Icon(
+                          Icons.add,
+                          color:
+                              isUserInFamily ? Colors.grey : Color(0xFF2B3649),
+                        ),
+                        // Desabilita o botão se o usuário já estiver em uma família
+                        onPressed: isUserInFamily
+                            ? null
+                            : () async {
+                                // Verifica se o membro já foi adicionado
+                                setState(() {
+                                  if (!members
+                                      .any((m) => m['name'] == user['name'])) {
+                                    members.add({
+                                      'name': user['name'],
+                                      'avatarColor':
+                                          user['avatarColor'] ?? '0xFFBDBDBD',
+                                    });
+                                  }
+                                });
 
-                          // Recupera o ID da família (supondo que você tenha esse ID)
-                          String? familyId =
-                              await DatabaseMethods().getFamilyId();
+                                // Recupera o ID da família (supondo que você tenha esse ID)
+                                String? familyId =
+                                    await DatabaseMethods().getFamilyId();
 
-                          if (familyId != null) {
-                            // Adiciona o membro à família no banco de dados
-                            await DatabaseMethods()
-                                .addMemberToFamily(user.id, familyId);
+                                if (familyId != null) {
+                                  // Adiciona o membro à família no banco de dados
+                                  await DatabaseMethods()
+                                      .addMemberToFamily(user.id, familyId);
 
-                            // Exibe mensagem de sucesso
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      '${user['name']} adicionado à família')),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      'Você não está associado a uma família')),
-                            );
-                          }
-                          Navigator.of(context).pop();
-                        },
+                                  // Exibe mensagem de sucesso
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            '${user['name']} adicionado à família')),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            'Você não está associado a uma família')),
+                                  );
+                                }
+                                Navigator.of(context).pop();
+                              },
                       ),
                     );
                   },
@@ -508,10 +517,10 @@ class _FamilyScreenState extends State<FamilyScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 10),
-                                // Aqui vem a lógica de exibição dos membros
+                                // Exibição dos membros
                                 FutureBuilder<List<Map<String, dynamic>>>(
                                   future:
-                                      _getFamilyMembers(), // Método para buscar membros
+                                      _getFamilyMembers(), // Método buscar membros
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -592,10 +601,16 @@ class _FamilyScreenState extends State<FamilyScreen> {
   }
 
   Future<List<Map<String, dynamic>>> _getFamilyMembers() async {
-    String? familyId = await DatabaseMethods().getFamilyId();
-    if (familyId != null) {
-      return await DatabaseMethods().getFamilyMembers(familyId);
-    } else {
+    try {
+      String? familyId = await DatabaseMethods().getFamilyId();
+      if (familyId != null) {
+        return await DatabaseMethods().getFamilyMembers(familyId);
+      } else {
+        throw Exception("ID da família é nulo");
+      }
+    } catch (e) {
+      print(
+          "Erro ao carregar membros: $e");
       return [];
     }
   }
