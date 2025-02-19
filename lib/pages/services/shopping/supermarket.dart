@@ -25,9 +25,12 @@ class _SupermarketState extends State<Supermarket> {
   }
 
   void getOnTheLoad() async {
-    setState(() {
-      todoStream = _databaseMethods.getProducts(category);
-    });
+    String? familyId = await _databaseMethods.getFamilyId();
+    if (familyId != null) {
+      setState(() {
+        todoStream = _databaseMethods.getProducts(familyId, "Supermarket");
+      });
+    }
   }
 
   Widget allProduct() {
@@ -148,17 +151,36 @@ class _SupermarketState extends State<Supermarket> {
                                                       ),
                                                       TextButton(
                                                         onPressed: () async {
-                                                          await DatabaseMethods()
-                                                              .deleteProductList(
-                                                                  category);
-                                                          setState(() {
-                                                            todoStream =
-                                                                null; // Limpa a lista após a exclusão
-                                                          });
-                                                          Navigator.of(context)
-                                                              .pop(); // Fecha o diálogo
-                                                          Navigator.of(context)
-                                                              .pop(); // Fecha o menu
+                                                          String? familyId =
+                                                              await DatabaseMethods()
+                                                                  .getFamilyId(); // Obtém o familyId
+
+                                                          if (familyId !=
+                                                              null) {
+                                                            await DatabaseMethods()
+                                                                .deleteProductList(
+                                                                    familyId,
+                                                                    category);
+                                                            setState(() {
+                                                              todoStream =
+                                                                  null; // Limpa a lista após a exclusão
+                                                            });
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(); // Fecha o diálogo
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(); // Fecha o menu
+                                                          } else {
+                                                            // Se não encontrar o familyId, exibe uma mensagem de erro
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                  content: Text(
+                                                                      'Erro: Nenhuma família encontrada para este usuário.')),
+                                                            );
+                                                          }
                                                         },
                                                         child: Container(
                                                           padding:
@@ -188,7 +210,7 @@ class _SupermarketState extends State<Supermarket> {
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
+                                                      )
                                                     ],
                                                   ),
                                                 );
@@ -250,6 +272,7 @@ class _SupermarketState extends State<Supermarket> {
                         scrollDirection: Axis.vertical,
                         itemBuilder: (context, index) {
                           DocumentSnapshot ds = snapshot.data.docs[index];
+
                           return CheckboxListTile(
                             activeColor: const Color(0xFF577096),
                             title: Text(
@@ -261,9 +284,21 @@ class _SupermarketState extends State<Supermarket> {
                             ),
                             value: ds['Yes'],
                             onChanged: (newValue) async {
-                              await DatabaseMethods()
-                                  .updateIfTicked(category, ds['Id']);
-                              setState(() {});
+                              String? familyId = await DatabaseMethods()
+                                  .getFamilyId(); // Obtém o familyId
+
+                              if (familyId != null) {
+                                await DatabaseMethods().updateIfTicked(
+                                    familyId, category, ds['Id']);
+                                setState(() {});
+                              } else {
+                                // Se não encontrar o familyId, exibe uma mensagem de erro
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          'Erro: Nenhuma família encontrada para este usuário.')),
+                                );
+                              }
                             },
                             controlAffinity: ListTileControlAffinity.leading,
                           );
@@ -510,7 +545,7 @@ class _SupermarketState extends State<Supermarket> {
                   ),
                   const SizedBox(height: 20.0),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       if (todoController.text.isEmpty) {
                         // Mostrar mensagem de erro ou alertar o usuário
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -518,14 +553,28 @@ class _SupermarketState extends State<Supermarket> {
                               content: Text('Por favor, insira um produto.')),
                         );
                       } else {
-                        String id = randomAlphaNumeric(10);
-                        Map<String, dynamic> userTodo = {
-                          'Product': todoController.text,
-                          'Id': id,
-                          'Yes': false,
-                        };
-                        DatabaseMethods().addProduct(category, userTodo, id);
-                        Navigator.pop(context);
+                        String? familyId = await DatabaseMethods()
+                            .getFamilyId(); // Obtém o familyId
+
+                        if (familyId != null) {
+                          String id = randomAlphaNumeric(10);
+                          Map<String, dynamic> userTodo = {
+                            'Product': todoController.text,
+                            'Id': id,
+                            'Yes': false,
+                          };
+
+                          await DatabaseMethods()
+                              .addProduct(familyId, category, userTodo, id);
+                          Navigator.pop(context);
+                        } else {
+                          // Se o usuário não estiver em uma família, exibe uma mensagem de erro
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'Erro: Nenhuma família encontrada para este usuário.')),
+                          );
+                        }
                       }
                     },
                     child: Padding(
@@ -555,4 +604,28 @@ class _SupermarketState extends State<Supermarket> {
           ),
         ),
       );
+
+  void addProduct(String productName) async {
+    String? familyId = await _databaseMethods.getFamilyId();
+    if (familyId != null) {
+      String id = randomAlphaNumeric(10); // Gerando um ID único para o produto
+      Map<String, dynamic> productData = {
+        "Product": productName,
+        "Yes": false,
+        "Id": id
+      };
+      await _databaseMethods.addProduct(
+          familyId, "Supermarket", productData, id);
+    }
+  }
+
+  void deleteShoppingList() async {
+    String? familyId = await _databaseMethods.getFamilyId();
+    if (familyId != null) {
+      await _databaseMethods.deleteProductList(familyId, "Supermarket");
+      setState(() {
+        todoStream = null; // Limpa a UI após excluir a lista
+      });
+    }
+  }
 }

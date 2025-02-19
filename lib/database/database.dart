@@ -147,57 +147,60 @@ class DatabaseMethods {
   // ========== LISTA DE COMPRAS ==========
 
   // Adicionar um produto a uma categoria específica
-  Future<void> addProduct(
-      String category, Map<String, dynamic> userShoppingMap, String id) async {
-    return await _firestore
-        .collection('Users')
-        .doc(userId)
-        .collection('ShoppingLists')
-        .doc(category)
-        .collection('Products')
-        .doc(id)
-        .set(userShoppingMap);
-  }
+  Future<void> addProduct(String familyId, String category, Map<String, dynamic> productData, String id) async {
+  return await _firestore
+      .collection('Families')
+      .doc(familyId)
+      .collection('ShoppingLists')
+      .doc(category)
+      .collection('Products')
+      .doc(id)
+      .set(productData);
+}
+
 
   // Obter produtos de uma categoria específica
-  Stream<QuerySnapshot> getProducts(String category) {
-    return _firestore
-        .collection('Users')
-        .doc(userId)
-        .collection('ShoppingLists')
-        .doc(category)
-        .collection('Products')
-        .snapshots();
-  }
+  Stream<QuerySnapshot> getProducts(String familyId, String category) {
+  return _firestore
+      .collection('Families')
+      .doc(familyId)
+      .collection('ShoppingLists')
+      .doc(category)
+      .collection('Products')
+      .snapshots();
+}
+
 
   // Atualizar o status "Yes" de um produto
-  Future<void> updateIfTicked(String category, String id) async {
-    return await _firestore
-        .collection('Users')
-        .doc(userId)
-        .collection('ShoppingLists')
-        .doc(category)
-        .collection('Products')
-        .doc(id)
-        .update({'Yes': true});
-  }
+  Future<void> updateIfTicked(String familyId, String category, String id) async {
+  return await _firestore
+      .collection('Families')
+      .doc(familyId)
+      .collection('ShoppingLists')
+      .doc(category)
+      .collection('Products')
+      .doc(id)
+      .update({'Yes': true});
+}
+
 
   // Remover toda a lista de compras de uma categoria
-  Future<void> deleteProductList(String category) async {
-    final batch = _firestore.batch();
-    final collectionRef = _firestore
-        .collection('Users')
-        .doc(userId)
-        .collection('ShoppingLists')
-        .doc(category)
-        .collection('Products');
+  Future<void> deleteProductList(String familyId, String category) async {
+  final batch = _firestore.batch();
+  final collectionRef = _firestore
+      .collection('Families')
+      .doc(familyId)
+      .collection('ShoppingLists')
+      .doc(category)
+      .collection('Products');
 
-    final querySnapshot = await collectionRef.get();
-    for (var doc in querySnapshot.docs) {
-      batch.delete(doc.reference);
-    }
-    await batch.commit();
+  final querySnapshot = await collectionRef.get();
+  for (var doc in querySnapshot.docs) {
+    batch.delete(doc.reference);
   }
+  await batch.commit();
+}
+
 
   // ============ TAREFAS ============
 
