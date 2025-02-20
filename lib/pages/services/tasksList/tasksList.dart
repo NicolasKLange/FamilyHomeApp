@@ -58,7 +58,6 @@ class _TasksListState extends State<TasksList> {
                 ],
               ),
               const SizedBox(height: 5.0),
-              
               const SizedBox(height: 10.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -76,14 +75,17 @@ class _TasksListState extends State<TasksList> {
               ),
               const SizedBox(height: 20.0),
               GestureDetector(
-                onTap: () {
-                  if (taskController.text.isNotEmpty) {
-                    _databaseMethods.addTask(selectedDate, taskController.text);
+                onTap: () async {
+                  // Certifique-se de obter o familyId antes de chamar o método
+                  String? familyId = await _databaseMethods.getFamilyId();
+
+                  if (taskController.text.isNotEmpty && familyId != null) {
+                    _databaseMethods.addTask(
+                        familyId, selectedDate, taskController.text);
                     taskController.clear();
                     Navigator.pop(context);
                   }
                 },
-                
                 child: Padding(
                   padding: const EdgeInsets.only(left: 130.0),
                   child: Container(
@@ -105,7 +107,7 @@ class _TasksListState extends State<TasksList> {
                     ),
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -169,249 +171,275 @@ class _TasksListState extends State<TasksList> {
         ),
         automaticallyImplyLeading: false,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 10),
-          Container(
-            margin:
-                const EdgeInsets.only(right: 43, left: 43, top: 30, bottom: 10),
-            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 20),
-            decoration: BoxDecoration(
-              color: const Color(0xFFEDE8E8),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: const Color(0xFF2B3649),
-                width: 2,
+      body: FutureBuilder<String?>(
+        future: DatabaseMethods().getFamilyId(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(
+                child: Text("Usuário não pertence a uma família"));
+          }
+          String familyId = snapshot.data!;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                margin: const EdgeInsets.only(
+                    right: 43, left: 43, top: 30, bottom: 10),
+                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEDE8E8),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: const Color(0xFF2B3649),
+                    width: 2,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    const Text(
+                      ("Tarefas"),
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                const SizedBox(
-                  width: 40,
-                ),
-                const Text(
-                  ("Tarefas"),
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 15),
-          //Dia de hoje baseado no dia selecionado
-          Text(
-            DateFormat("d 'de' MMMM 'de' yyyy", 'pt_BR').format(selectedDate),
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
-          //Calendário scrolável
-          SingleChildScrollView(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: List.generate(
-                23, // 7 dias para trás + 15 dias para frente + o dia atual
-                (index) {
-                  DateTime date = DateTime.now()
-                      .subtract(const Duration(days: 7))
-                      .add(Duration(days: index));
-                  DateTime today = DateTime.now();
+              const SizedBox(height: 15),
+              //Dia de hoje baseado no dia selecionado
+              Text(
+                DateFormat("d 'de' MMMM 'de' yyyy", 'pt_BR')
+                    .format(selectedDate),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              //Calendário scrolável
+              SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                    23, // 7 dias para trás + 15 dias para frente + o dia atual
+                    (index) {
+                      DateTime date = DateTime.now()
+                          .subtract(const Duration(days: 7))
+                          .add(Duration(days: index));
+                      DateTime today = DateTime.now();
 
-                  bool isToday = date.day == today.day &&
-                      date.month == today.month &&
-                      date.year == today.year;
-                  bool isSelected = selectedDate.day == date.day &&
-                      selectedDate.month == date.month &&
-                      selectedDate.year == date.year;
+                      bool isToday = date.day == today.day &&
+                          date.month == today.month &&
+                          date.year == today.year;
+                      bool isSelected = selectedDate.day == date.day &&
+                          selectedDate.month == date.month &&
+                          selectedDate.year == date.year;
 
-                  // Verificar se o dia é passado, excluindo o dia de hoje
-                  bool isPastDay = date.isBefore(today);
+                      // Verificar se o dia é passado, excluindo o dia de hoje
+                      bool isPastDay = date.isBefore(today);
 
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedDate = date;
-                      });
-                    },
-                    child: Container(
-                      width: 68,
-                      height: 100,
-                      margin: const EdgeInsets.symmetric(horizontal: 5),
-                      padding: const EdgeInsets.only(top: 17),
-                      decoration: BoxDecoration(
-                        color: isToday
-                            ? (isSelected
-                                ? const Color(
-                                    0xff577096) // Cor de seleção para o dia de hoje
-                                : const Color(
-                                    0xffEDE8E8)) // Cor fixa para o dia de hoje, caso não esteja selecionado
-                            : isSelected
-                                ? const Color(
-                                    0xff577096) // Cor para o dia selecionado
-                                : isPastDay && !isToday
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedDate = date;
+                          });
+                        },
+                        child: Container(
+                          width: 68,
+                          height: 100,
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.only(top: 17),
+                          decoration: BoxDecoration(
+                            color: isToday
+                                ? (isSelected
                                     ? const Color(
-                                        0xffD2D2D2) // Cor para dias passados
-                                    : const Color(0xffEDE8E8), // Cor padrão
+                                        0xff577096) // Cor de seleção para o dia de hoje
+                                    : const Color(
+                                        0xffEDE8E8)) // Cor fixa para o dia de hoje, caso não esteja selecionado
+                                : isSelected
+                                    ? const Color(
+                                        0xff577096) // Cor para o dia selecionado
+                                    : isPastDay && !isToday
+                                        ? const Color(
+                                            0xffD2D2D2) // Cor para dias passados
+                                        : const Color(0xffEDE8E8), // Cor padrão
 
-                        borderRadius: BorderRadius.circular(13),
-                        border: Border.all(color: const Color(0xff2B3649)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xff2B3649).withOpacity(0.2),
-                            blurRadius: 10,
-                            offset: const Offset(3, 10),
+                            borderRadius: BorderRadius.circular(13),
+                            border: Border.all(color: const Color(0xff2B3649)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xff2B3649).withOpacity(0.2),
+                                blurRadius: 10,
+                                offset: const Offset(3, 10),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          // Dia da semana
-                          Text(
-                            DateFormat('E', 'pt_BR')
-                                .format(date)
-                                .replaceAll('.', '')
-                                .capitalize(),
-                            style: TextStyle(
-                              color: isToday
-                                  ? const Color(0xff2B3649)
-                                  : isSelected
-                                      ? const Color(0xffEDE8E8)
-                                      : isPastDay && !isToday
-                                          ? const Color(0xff909090)
-                                          : const Color(0xff2B3649),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          // Dia
-                          Text(
-                            "${date.day}",
-                            style: TextStyle(
-                              color: isToday
-                                  ? const Color(0xff2B3649)
-                                  : isSelected
-                                      ? const Color(0xffEDE8E8)
-                                      : isPastDay && !isToday
-                                          ? const Color(0xff909090)
-                                          : const Color(0xff414B5B),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-
-          const SizedBox(
-            height: 15,
-          ),
-          // Tarefas
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Padding(
-              padding:
-                  const EdgeInsets.only(right: 15.0, left: 15.0, top: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Tarefas",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: selectedDate.isBefore(
-                            DateTime.now().subtract(const Duration(days: 1)))
-                        ? null
-                        : _showAddTaskDialog, // Desativa o botão se for dias passados
-                    color: selectedDate.isBefore(
-                            DateTime.now().subtract(const Duration(days: 1)))
-                        ? Colors.grey
-                        : null, // Muda a cor para indicar que está desativado
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          Expanded(
-            child: StreamBuilder(
-              stream: DatabaseMethods().getTasks(selectedDate),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.data!.docs.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      "Não possui nenhuma tarefa neste dia!",
-                      style: TextStyle(
-                        fontSize: 17,
-                        color: Color(0XFF2B3649),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  );
-                }
-                return ListView(
-                  children: snapshot.data!.docs.map((doc) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 25),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffEDE8E8),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Color(0XFF2B3649), width: 1),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: const Offset(2, 5),
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                        child: ListTile(
-                          leading: Checkbox(
-                            activeColor: const Color(0XFF577096),
-                            value: doc['completed'],
-                            onChanged: (value) {
-                              DatabaseMethods().toggleTaskCompletion(
-                                doc.id,
-                                doc['completed'],
-                              );
-                            },
-                          ),
-                          title: Text(doc['description']),
-                          trailing: IconButton(
-                            icon: const Icon(
-                              Icons.delete,
-                              color: Color(0XFF2B3649),
-                            ),
-                            onPressed: () {
-                              DatabaseMethods().deleteTask(doc.id);
-                            },
+                          child: Column(
+                            children: [
+                              // Dia da semana
+                              Text(
+                                DateFormat('E', 'pt_BR')
+                                    .format(date)
+                                    .replaceAll('.', '')
+                                    .capitalize(),
+                                style: TextStyle(
+                                  color: isToday
+                                      ? const Color(0xff2B3649)
+                                      : isSelected
+                                          ? const Color(0xffEDE8E8)
+                                          : isPastDay && !isToday
+                                              ? const Color(0xff909090)
+                                              : const Color(0xff2B3649),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              // Dia
+                              Text(
+                                "${date.day}",
+                                style: TextStyle(
+                                  color: isToday
+                                      ? const Color(0xff2B3649)
+                                      : isSelected
+                                          ? const Color(0xffEDE8E8)
+                                          : isPastDay && !isToday
+                                              ? const Color(0xff909090)
+                                              : const Color(0xff414B5B),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+              const SizedBox(
+                height: 15,
+              ),
+              // Tarefas
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(right: 15.0, left: 15.0, top: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Tarefas",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: selectedDate.isBefore(DateTime.now()
+                                .subtract(const Duration(days: 1)))
+                            ? null
+                            : _showAddTaskDialog, // Desativa o botão se for dias passados
+                        color: selectedDate.isBefore(DateTime.now()
+                                .subtract(const Duration(days: 1)))
+                            ? Colors.grey
+                            : null, // Muda a cor para indicar que está desativado
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: StreamBuilder(
+                  stream: DatabaseMethods().getTasks(familyId, selectedDate),
+                  builder:
+                      (context, AsyncSnapshot<QuerySnapshot> taskSnapshot) {
+                    if (!taskSnapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (taskSnapshot.data!.docs.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          "Não possui nenhuma tarefa neste dia!",
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Color(0XFF2B3649),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    }
+                    return ListView(
+                      children: taskSnapshot.data!.docs.map((doc) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 25),
+                          decoration: BoxDecoration(
+                            color: const Color(0xffEDE8E8),
+                            borderRadius: BorderRadius.circular(10),
+                            border:
+                                Border.all(color: Color(0XFF2B3649), width: 1),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 4,
+                                offset: const Offset(2, 5),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                            child: ListTile(
+                              leading: Checkbox(
+                                activeColor: const Color(0XFF577096),
+                                value: doc['completed'],
+                                onChanged: (bool? value) {
+                                  if (value != null) {
+                                    // Atualiza a tarefa no Firestore com o novo valor de 'completed'
+                                    DatabaseMethods().toggleTaskCompletion(
+                                        familyId,
+                                        doc.id,
+                                        value); // Passa o familyId e o valor do checkbox
+                                  }
+                                },
+                              ),
+                              title: Text(doc['description']),
+                              trailing: IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Color(0XFF2B3649),
+                                ),
+                                onPressed: () {
+                                  DatabaseMethods()
+                                      .deleteTask(familyId, doc.id);
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
                     );
-                  }).toList(),
-                );
-              },
-            ),
-          )
-        ],
+                  },
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }

@@ -64,20 +64,20 @@ class DatabaseMethods {
   }
 
   Future<List<Map<String, dynamic>>> getFamilyMembers(String familyId) async {
-  QuerySnapshot membersSnapshot = await _firestore
-      .collection('Users')
-      .where('idFamilia', isEqualTo: familyId)
-      .get();
+    QuerySnapshot membersSnapshot = await _firestore
+        .collection('Users')
+        .where('idFamilia', isEqualTo: familyId)
+        .get();
 
-  return membersSnapshot.docs.map((doc) {
-    return {
-      'id': doc.id,           // ID do documento (usuário)
-      'name': doc['name'],     // Nome do membro
-      'avatarColor': doc['avatarColor'] ?? 'defaultColor',  // Cor do avatar (caso tenha)
-    };
-  }).toList();
-}
-
+    return membersSnapshot.docs.map((doc) {
+      return {
+        'id': doc.id, // ID do documento (usuário)
+        'name': doc['name'], // Nome do membro
+        'avatarColor':
+            doc['avatarColor'] ?? 'defaultColor', // Cor do avatar (caso tenha)
+      };
+    }).toList();
+  }
 
   // ========== PERFIL DO USUÁRIO ==========
 
@@ -147,101 +147,105 @@ class DatabaseMethods {
   // ========== LISTA DE COMPRAS ==========
 
   // Adicionar um produto a uma categoria específica
-  Future<void> addProduct(String familyId, String category, Map<String, dynamic> productData, String id) async {
-  return await _firestore
-      .collection('Families')
-      .doc(familyId)
-      .collection('ShoppingLists')
-      .doc(category)
-      .collection('Products')
-      .doc(id)
-      .set(productData);
-}
-
+  Future<void> addProduct(String familyId, String category,
+      Map<String, dynamic> productData, String id) async {
+    return await _firestore
+        .collection('Families')
+        .doc(familyId)
+        .collection('ShoppingLists')
+        .doc(category)
+        .collection('Products')
+        .doc(id)
+        .set(productData);
+  }
 
   // Obter produtos de uma categoria específica
   Stream<QuerySnapshot> getProducts(String familyId, String category) {
-  return _firestore
-      .collection('Families')
-      .doc(familyId)
-      .collection('ShoppingLists')
-      .doc(category)
-      .collection('Products')
-      .snapshots();
-}
-
+    return _firestore
+        .collection('Families')
+        .doc(familyId)
+        .collection('ShoppingLists')
+        .doc(category)
+        .collection('Products')
+        .snapshots();
+  }
 
   // Atualizar o status "Yes" de um produto
-  Future<void> updateIfTicked(String familyId, String category, String id) async {
-  return await _firestore
-      .collection('Families')
-      .doc(familyId)
-      .collection('ShoppingLists')
-      .doc(category)
-      .collection('Products')
-      .doc(id)
-      .update({'Yes': true});
-}
-
+  Future<void> updateIfTicked(
+      String familyId, String category, String id) async {
+    return await _firestore
+        .collection('Families')
+        .doc(familyId)
+        .collection('ShoppingLists')
+        .doc(category)
+        .collection('Products')
+        .doc(id)
+        .update({'Yes': true});
+  }
 
   // Remover toda a lista de compras de uma categoria
   Future<void> deleteProductList(String familyId, String category) async {
-  final batch = _firestore.batch();
-  final collectionRef = _firestore
-      .collection('Families')
-      .doc(familyId)
-      .collection('ShoppingLists')
-      .doc(category)
-      .collection('Products');
+    final batch = _firestore.batch();
+    final collectionRef = _firestore
+        .collection('Families')
+        .doc(familyId)
+        .collection('ShoppingLists')
+        .doc(category)
+        .collection('Products');
 
-  final querySnapshot = await collectionRef.get();
-  for (var doc in querySnapshot.docs) {
-    batch.delete(doc.reference);
+    final querySnapshot = await collectionRef.get();
+    for (var doc in querySnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
   }
-  await batch.commit();
-}
-
 
   // ============ TAREFAS ============
 
-  // Adicionar uma nova tarefa
-  Future<void> addTask(DateTime date, String description) async {
+  // Adicionar uma nova tarefa à família
+  Future<void> addTask(
+      String familyId, DateTime date, String description) async {
     String formattedDate = "${date.year}-${date.month}-${date.day}";
-    await _firestore.collection('Users').doc(userId).collection('Tasks').add({
+    await _firestore
+        .collection('Families')
+        .doc(familyId)
+        .collection('Tasks')
+        .add({
       'description': description,
       'completed': false,
       'date': formattedDate,
     });
   }
 
-  // Obter tarefas para um dia específico
-  Stream<QuerySnapshot> getTasks(DateTime date) {
+  // Obter tarefas de um dia específico para a família
+  Stream<QuerySnapshot> getTasks(String familyId, DateTime date) {
     String formattedDate = "${date.year}-${date.month}-${date.day}";
     return _firestore
-        .collection('Users')
-        .doc(userId)
+        .collection('Families')
+        .doc(familyId)
         .collection('Tasks')
         .where('date', isEqualTo: formattedDate)
         .snapshots();
   }
 
-  // Marcar uma tarefa como concluída
-  Future<void> toggleTaskCompletion(String taskId, bool currentStatus) async {
+  Future<void> toggleTaskCompletion(
+      String familyId, String taskId, bool completed) async {
     await _firestore
-        .collection('Users')
-        .doc(userId)
+        .collection('Families') // Acesso correto à coleção 'Families'
+        .doc(familyId)
         .collection('Tasks')
         .doc(taskId)
-        .update({'completed': !currentStatus});
+        .update({
+      'completed': completed
+    }); // Atualiza o campo 'completed' com o valor de 'completed'
   }
 
-  // Deletar uma tarefa
-  Future<void> deleteTask(String taskId) async {
+  Future<void> deleteTask(String familyId, String taskId) async {
     await _firestore
-        .collection('Users')
-        .doc(userId)
+        .collection('Families') // Altere de 'Users' para 'Families'
+        .doc(familyId)
         .collection('Tasks')
         .doc(taskId)
-        .delete();
+        .delete(); // Exclui a tarefa
   }
 }
