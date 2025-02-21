@@ -1,3 +1,4 @@
+import 'package:family_home_app/pages/family/family.dart';
 import 'package:family_home_app/pages/home/home_page.dart';
 import 'package:family_home_app/pages/services/shopping/clothes.dart';
 import 'package:family_home_app/pages/services/shopping/dashboardShopping.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         '/pharmacy': (context) => const Pharmacy(),
         '/clothes': (context) => const Clothes(),
         '/school': (context) => const School(),
+        '/family': (context) => const FamilyScreen(),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

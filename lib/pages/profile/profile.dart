@@ -15,83 +15,16 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final User? user = FirebaseAuth.instance.currentUser;
   final DatabaseMethods _userDatabase = DatabaseMethods();
-
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController cpfController = TextEditingController();
   final TextEditingController birthdateController = TextEditingController();
-
-  Color avatarColor = Colors.grey.shade300; // Cor padrão do avatar de perfil
+  Color avatarColor = Colors.grey.shade300;
 
   @override
   void initState() {
     super.initState();
     _initializeProfile();
-  }
-final String userId = FirebaseAuth.instance.currentUser!.uid;
-  Future<void> _initializeProfile() async {
-    await _userDatabase.initializeUserProfile(user!.email!, userId);
-
-    final userProfile = await _userDatabase.getUserProfile(userId);
-    setState(() {
-      nameController.text = userProfile['name'] ?? '';
-      cpfController.text = userProfile['cpf'] ?? '';
-      birthdateController.text = userProfile['birthdate'] ?? '';
-
-      // Carregar a cor escolhida para o Firebase
-      if (userProfile['avatarColor'] != null) {
-        avatarColor = Color(int.parse(userProfile['avatarColor']));
-      }
-    });
-  }
-
-  Future<void> _updateProfile() async {
-    await FirebaseFirestore.instance.collection('Users').doc(user!.uid).update({
-      'name': nameController.text,
-      'cpf': cpfController.text.isEmpty ? null : cpfController.text,
-      'birthdate':
-          birthdateController.text.isEmpty ? null : birthdateController.text,
-      'avatarColor':
-          avatarColor.value.toString(), // Salvar a cor como uma String
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Perfil atualizado com sucesso!')),
-    );
-  }
-
-  // Método para selecionar uma cor
-  void _pickColor() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Escolha uma cor"),
-          content: SingleChildScrollView(
-            child: ColorPicker(
-              pickerColor: avatarColor,
-              onColorChanged: (Color color) {
-                setState(() {
-                  avatarColor = color;
-                });
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancelar"),
-            ),
-            TextButton(
-              onPressed: () {
-                _updateProfile(); // Salvar a cor escolhida pelo usuário
-                Navigator.pop(context);
-              },
-              child: const Text("Salvar"),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -228,6 +161,73 @@ final String userId = FirebaseAuth.instance.currentUser!.uid;
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _initializeProfile() async {
+    await _userDatabase.initializeUserProfile(user!.email!, userId);
+
+    final userProfile = await _userDatabase.getUserProfile(userId);
+    setState(() {
+      nameController.text = userProfile['name'] ?? '';
+      cpfController.text = userProfile['cpf'] ?? '';
+      birthdateController.text = userProfile['birthdate'] ?? '';
+
+      // Carregar a cor escolhida para o Firebase
+      if (userProfile['avatarColor'] != null) {
+        avatarColor = Color(int.parse(userProfile['avatarColor']));
+      }
+    });
+  }
+
+  //Editar dados de perfil
+  Future<void> _updateProfile() async {
+    await FirebaseFirestore.instance.collection('Users').doc(user!.uid).update({
+      'name': nameController.text,
+      'cpf': cpfController.text.isEmpty ? null : cpfController.text,
+      'birthdate':
+          birthdateController.text.isEmpty ? null : birthdateController.text,
+      'avatarColor':
+          avatarColor.value.toString(), // Salvar a cor como uma String
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Perfil atualizado com sucesso!')),
+    );
+  }
+
+  // Método para selecionar uma cor do avatar
+  void _pickColor() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Escolha uma cor"),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: avatarColor,
+              onColorChanged: (Color color) {
+                setState(() {
+                  avatarColor = color;
+                });
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                _updateProfile();
+                Navigator.pop(context);
+              },
+              child: const Text("Salvar"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
