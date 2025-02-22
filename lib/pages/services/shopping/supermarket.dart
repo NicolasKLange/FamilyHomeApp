@@ -358,8 +358,11 @@ class _SupermarketState extends State<Supermarket> {
         ),
         automaticallyImplyLeading: false,
       ),
+      
       body: Center(
+        
         child: FutureBuilder<String?>(
+          
           future: DatabaseMethods().getFamilyId(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -370,7 +373,7 @@ class _SupermarketState extends State<Supermarket> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   Container(
                     margin: const EdgeInsets.only(
                         right: 43, left: 43, top: 30, bottom: 10),
@@ -383,6 +386,7 @@ class _SupermarketState extends State<Supermarket> {
                         width: 2,
                       ),
                     ),
+                    
                     child: Row(
                       children: [
                         IconButton(
@@ -426,10 +430,11 @@ class _SupermarketState extends State<Supermarket> {
                 ],
               );
             }
-        
             return Column(
+              
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                SizedBox(height: 20,),
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
@@ -440,6 +445,7 @@ class _SupermarketState extends State<Supermarket> {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: const Color(0xFF2B3649), width: 2),
                   ),
+                  
                   child: Row(
                     children: [
                       GestureDetector(

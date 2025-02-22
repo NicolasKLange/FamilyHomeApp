@@ -32,28 +32,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Perfil',
-                      style: TextStyle(
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0XFF2B3649),
-                      ),
-                    ),
-                  ),
+          Container(
+            margin: const EdgeInsets.only(left: 30, right: 30, top: 50),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEDE8E8),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xFF2B3649), width: 2),
+            ),
+            child: Center(
+              child: Text(
+                'Perfil',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2B3649),
                 ),
-              ],
+              ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -67,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Text(
                       nameController.text.isNotEmpty
                           ? nameController.text[0].toUpperCase()
-                          : '?', // Inicial do nome do usuário
+                          : '?',
                       style: const TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
@@ -76,19 +74,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
                 Container(
                   padding: const EdgeInsets.all(16),
                   margin: const EdgeInsets.symmetric(horizontal: 40),
                   decoration: BoxDecoration(
                     color: const Color(0XFFEDE8E8),
+                    border:
+                        Border.all(color: const Color(0xFF2B3649), width: 2),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
+                        color: Color(0xFF577096),
+                        spreadRadius: 3,
+                        blurRadius: 8,
+                        offset: const Offset(3, 6),
                       ),
                     ],
                   ),
@@ -103,8 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           border: InputBorder.none,
                         ),
                         onChanged: (value) {
-                          setState(
-                              () {}); // Atualiza a tela para refletir a nova inicial
+                          setState(() {});
                         },
                       ),
                       const SizedBox(height: 8),
@@ -129,17 +128,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           border: InputBorder.none,
                         ),
                         keyboardType: TextInputType.number,
-                        inputFormatters: [MaskedInputFormatter('00/00/0000')],
+                        inputFormatters: [
+                          MaskedInputFormatter('00/00/0000'),
+                        ],
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 40,
                 ),
                 // Botão de salvar
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFF577096),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: const Offset(1, 5),
+                      ),
+                    ],
+                  ),
                   child: ElevatedButton(
                     onPressed: _updateProfile,
                     style: ElevatedButton.styleFrom(

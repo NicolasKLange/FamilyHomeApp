@@ -173,8 +173,6 @@ class _FamilyScreenState extends State<FamilyScreen> {
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500),
                                             ),
-                                            subtitle: Text(member['id'] ??
-                                                'ID não encontrado'),
                                             trailing: IconButton(
                                               icon: Icon(
                                                 Icons.delete,

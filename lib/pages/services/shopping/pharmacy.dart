@@ -369,7 +369,7 @@ class _PharmacyState extends State<Pharmacy> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20,),
                   Container(
                     margin: const EdgeInsets.only(
                         right: 43, left: 43, top: 30, bottom: 10),
@@ -429,6 +429,7 @@ class _PharmacyState extends State<Pharmacy> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(height: 20,),
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
