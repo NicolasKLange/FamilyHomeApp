@@ -16,7 +16,7 @@ class _ClothesState extends State<Clothes> {
   Stream? todoStream;
   final user = FirebaseAuth.instance.currentUser!;
   final DatabaseMethods _databaseMethods = DatabaseMethods();
-  final String category = "Clothes"; // Define a categoria
+  final String category = "Roupas"; // Define a categoria
 
   @override
   void initState() {
@@ -28,7 +28,7 @@ class _ClothesState extends State<Clothes> {
     String? familyId = await _databaseMethods.getFamilyId();
     if (familyId != null) {
       setState(() {
-        todoStream = _databaseMethods.getProducts(familyId, "Supermarket");
+        todoStream = _databaseMethods.getProducts(familyId, "Roupas");
       });
     }
   }
@@ -357,112 +357,114 @@ class _ClothesState extends State<Clothes> {
         ),
         automaticallyImplyLeading: false,
       ),
-      body: FutureBuilder<String?>(
-        future: DatabaseMethods().getFamilyId(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data == null) {
+      body: Center(
+        child: FutureBuilder<String?>(
+          future: DatabaseMethods().getFamilyId(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+        
+            if (!snapshot.hasData || snapshot.data == null) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 10),
+                  Container(
+                    margin: const EdgeInsets.only(
+                        right: 43, left: 43, top: 30, bottom: 10),
+                    padding: const EdgeInsets.only(bottom: 5, top: 5, left: 20),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEDE8E8),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: const Color(0xFF2B3649),
+                        width: 2,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const SizedBox(width: 40),
+                        Text(
+                          category,
+                          style: TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 300,
+                  ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Você não pertence a uma família"),
+                        const SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/homePage');
+                          },
+                          child: const Text(
+                            "Toque aqui para voltar e criar uma família",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2B3649),
+                              fontSize: 17,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+        
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 10),
                 Container(
-                  margin: const EdgeInsets.only(
-                      right: 43, left: 43, top: 30, bottom: 10),
-                  padding: const EdgeInsets.only(bottom: 5, top: 5, left: 20),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                   decoration: BoxDecoration(
                     color: const Color(0xFFEDE8E8),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color(0xFF2B3649),
-                      width: 2,
-                    ),
+                    border: Border.all(color: const Color(0xFF2B3649), width: 2),
                   ),
                   child: Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        onPressed: () => Navigator.pop(context),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(Icons.arrow_back),
                       ),
-                      const SizedBox(width: 40),
+                      const Spacer(),
                       Text(
                         category,
                         style: TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 300,
-                ),
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Você não pertence a uma família"),
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/homePage');
-                        },
-                        child: const Text(
-                          "Toque aqui para voltar e criar uma família",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2B3649),
-                            fontSize: 17,
-                          ),
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2B3649),
                         ),
                       ),
+                      const Spacer(),
                     ],
                   ),
                 ),
+                Center(child: Expanded(child: allProduct())),
               ],
             );
-          }
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFEDE8E8),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFF2B3649), width: 2),
-                ),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Icon(Icons.arrow_back),
-                    ),
-                    const Spacer(),
-                    Text(
-                      category,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2B3649),
-                      ),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-              ),
-              Expanded(child: allProduct()),
-            ],
-          );
-        },
+          },
+        ),
       ),
     );
   }
@@ -665,14 +667,14 @@ class _ClothesState extends State<Clothes> {
         "Id": id
       };
       await _databaseMethods.addProduct(
-          familyId, "Supermarket", productData, id);
+          familyId, "Roupas", productData, id);
     }
   }
 
   void deleteShoppingList() async {
     String? familyId = await _databaseMethods.getFamilyId();
     if (familyId != null) {
-      await _databaseMethods.deleteProductList(familyId, "Supermarket");
+      await _databaseMethods.deleteProductList(familyId, "Roupas");
       setState(() {
         todoStream = null; // Limpa a UI após excluir a lista
       });
