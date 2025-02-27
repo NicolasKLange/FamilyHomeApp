@@ -51,33 +51,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 40),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Círculo com a inicial do nome do usuário
-                GestureDetector(
-                  onTap: _pickColor,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: avatarColor,
-                    child: Text(
-                      nameController.text.isNotEmpty
-                          ? nameController.text[0].toUpperCase()
-                          : '?',
-                      style: const TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 40),
                 Container(
                   padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.symmetric(horizontal: 40),
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
                   decoration: BoxDecoration(
                     color: const Color(0XFFEDE8E8),
                     border:
@@ -93,45 +74,129 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Campo de nome
-                      TextField(
-                        controller: nameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Nome',
-                          border: InputBorder.none,
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      // Círculo com a inicial do nome do usuário
+                      Center(
+                        child: GestureDetector(
+                          onTap: _pickColor,
+                          child: Container(
+                            //sombra no avatar
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF577096),
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  offset: const Offset(2, 4),
+                                ),
+                              ],
+                            ),
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: avatarColor,
+                              child: Text(
+                                nameController.text.isNotEmpty
+                                    ? nameController.text[0].toUpperCase()
+                                    : '?',
+                                style: const TextStyle(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        onChanged: (value) {
-                          setState(() {});
-                        },
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      // Campo de nome
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: TextField(
+                          controller: nameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Nome',
+                            labelStyle: TextStyle(
+                              fontSize: 18,
+                              color: Color(
+                                (0xFF2B3649),
+                              ),
+                            ),
+                            hintText: 'Digite seu nome',
+                            hintStyle:
+                                TextStyle(fontSize: 16, color: Colors.grey),
+                            border: InputBorder.none,
+                          ),
+                          onChanged: (value) {
+                            setState(() {});
+                          },
+                        ),
                       ),
                       const SizedBox(height: 8),
                       // Campo de CPF
-                      TextField(
-                        controller: cpfController,
-                        decoration: const InputDecoration(
-                          labelText: 'CPF',
-                          border: InputBorder.none,
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          MaskedInputFormatter('000.000.000-00')
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: TextField(
+                                controller: cpfController,
+                                decoration: const InputDecoration(
+                                  labelText: 'CPF',
+                                  labelStyle: TextStyle(
+                                    fontSize: 18,
+                                    color: Color(
+                                      (0xFF2B3649),
+                                    ),
+                                  ),
+                                  hintText: 'xxx.xxx.xxx-xx',
+                                  hintStyle: TextStyle(
+                                      fontSize: 16, color: Colors.grey),
+                                  border: InputBorder.none,
+                                ),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  MaskedInputFormatter('000.000.000-00')
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Campo de data de nascimento
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: TextField(
+                                controller: birthdateController,
+                                decoration: const InputDecoration(
+                            labelText: 'Data de nascimento',
+                            labelStyle: TextStyle(
+                              fontSize: 18,
+                              color: Color(
+                                (0xFF2B3649),
+                              ),
+                            ),
+                            hintText: 'DD/MM/AAAA',
+                            hintStyle:
+                                TextStyle(fontSize: 16, color: Colors.grey),
+                            border: InputBorder.none,
+                          ),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  MaskedInputFormatter('00/00/0000'),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      // Campo de data de nascimento
-                      TextField(
-                        controller: birthdateController,
-                        decoration: const InputDecoration(
-                          labelText: 'Data de Nascimento',
-                          border: InputBorder.none,
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          MaskedInputFormatter('00/00/0000'),
-                        ],
-                      ),
                     ],
                   ),
                 ),

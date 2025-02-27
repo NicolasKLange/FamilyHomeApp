@@ -172,7 +172,7 @@ class DatabaseMethods {
 
   // Atualizar o status "Yes" de um produto
   Future<void> updateIfTicked(
-      String familyId, String category, String id) async {
+      String familyId, String category, String id, bool newValue) async {
     return await _firestore
         .collection('Families')
         .doc(familyId)
@@ -180,7 +180,8 @@ class DatabaseMethods {
         .doc(category)
         .collection('Products')
         .doc(id)
-        .update({'Yes': true});
+        .update(
+            {'Yes': newValue}); // Agora atualiza dinamicamente com o novo valor
   }
 
   // Remover toda a lista de compras de uma categoria
@@ -198,6 +199,18 @@ class DatabaseMethods {
       batch.delete(doc.reference);
     }
     await batch.commit();
+  }
+
+  //Função para verificar produtos que foram comprados ainda, para mostrar na tela dashboardShopping
+  Stream<QuerySnapshot> getProductsNotBought(String familyId, String category) {
+    return FirebaseFirestore.instance
+        .collection('Families')
+        .doc(familyId)
+        .collection('ShoppingLists')
+        .doc(category)
+        .collection('Products')
+        .where('Yes', isEqualTo: false) // Filtra apenas os itens não comprados
+        .snapshots();
   }
 
   // ============ TAREFAS ============
@@ -220,7 +233,7 @@ class DatabaseMethods {
   // Obter tarefas de um dia específico para a família
   Stream<QuerySnapshot> getTasks(String familyId, DateTime date) {
     String formattedDate = "${date.year}-${date.month}-${date.day}";
-    return _firestore
+    return FirebaseFirestore.instance
         .collection('Families')
         .doc(familyId)
         .collection('Tasks')
@@ -247,5 +260,18 @@ class DatabaseMethods {
         .collection('Tasks')
         .doc(taskId)
         .delete(); // Exclui a tarefa
+  }
+}
+
+class ShoppingDatabaseMethods {
+  Stream<QuerySnapshot> getProductsNotBought(String familyId, String category) {
+    return FirebaseFirestore.instance
+        .collection('Families')
+        .doc(familyId)
+        .collection('ShoppingLists')
+        .doc(category)
+        .collection('Products')
+        .where('Yes', isEqualTo: false)
+        .snapshots();
   }
 }

@@ -265,43 +265,47 @@ class _SchoolState extends State<School> {
                       ),
                     ),
                     ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: snapshot.data.docs.length,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot ds = snapshot.data.docs[index];
+                      padding: EdgeInsets.zero,
+                      itemCount: snapshot.data.docs.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot ds = snapshot.data.docs[index];
 
-                          return CheckboxListTile(
-                            activeColor: const Color(0xFF577096),
-                            title: Text(
-                              ds['Product'],
-                              style: const TextStyle(
-                                  color: Color(0xFF2B3649),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400),
+                        return CheckboxListTile(
+                          activeColor: const Color(0xFF577096),
+                          title: Text(
+                            ds['Product'],
+                            style: const TextStyle(
+                              color: Color(0xFF2B3649),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400,
                             ),
-                            value: ds['Yes'],
-                            onChanged: (newValue) async {
-                              String? familyId = await DatabaseMethods()
-                                  .getFamilyId(); // Obtém o familyId
+                          ),
+                          value: ds['Yes'], // Estado atual do checkbox
+                          onChanged: (newValue) async {
+                            String? familyId = await DatabaseMethods()
+                                .getFamilyId(); // Obtém o familyId
 
-                              if (familyId != null) {
-                                await DatabaseMethods().updateIfTicked(
-                                    familyId, category, ds['Id']);
-                                setState(() {});
-                              } else {
-                                // Se não encontrar o familyId, exibe uma mensagem de erro
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(
-                                          'Erro: Nenhuma família encontrada para este usuário.')),
-                                );
-                              }
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
-                          );
-                        }),
+                            if (familyId != null) {
+                              // Alternar entre marcado e desmarcado
+                              await DatabaseMethods().updateIfTicked(
+                                  familyId, category, ds['Id'], !ds['Yes']);
+                              setState(() {}); // Atualizar a UI
+                            } else {
+                              // Exibir erro se o familyId não for encontrado
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      'Erro: Nenhuma família encontrada para este usuário.'),
+                                ),
+                              );
+                            }
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                        );
+                      },
+                    ),
                   ],
                 ),
               )

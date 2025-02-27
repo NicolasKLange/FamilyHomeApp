@@ -19,6 +19,16 @@ class _TasksListState extends State<TasksList> {
   final ScrollController _scrollController = ScrollController();
   final DatabaseMethods _databaseMethods = DatabaseMethods();
 
+  Stream<QuerySnapshot> getTasks(String familyId, DateTime date) {
+    String formattedDate = "${date.year}-${date.month}-${date.day}";
+    return FirebaseFirestore.instance
+        .collection('Families')
+        .doc(familyId)
+        .collection('Tasks')
+        .where('date', isEqualTo: formattedDate)
+        .snapshots();
+  }
+
   Stream<DocumentSnapshot> get userStream {
     return FirebaseFirestore.instance
         .collection('Users')
@@ -210,7 +220,9 @@ class _TasksListState extends State<TasksList> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 300,),
+                const SizedBox(
+                  height: 300,
+                ),
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -314,18 +326,13 @@ class _TasksListState extends State<TasksList> {
                           decoration: BoxDecoration(
                             color: isToday
                                 ? (isSelected
-                                    ? const Color(
-                                        0xff577096) // Cor de seleção para o dia de hoje
-                                    : const Color(
-                                        0xffEDE8E8)) // Cor fixa para o dia de hoje, caso não esteja selecionado
+                                    ? const Color(0xff577096)
+                                    : const Color(0xffEDE8E8))
                                 : isSelected
-                                    ? const Color(
-                                        0xff577096) // Cor para o dia selecionado
+                                    ? const Color(0xff577096)
                                     : isPastDay && !isToday
-                                        ? const Color(
-                                            0xffD2D2D2) // Cor para dias passados
-                                        : const Color(0xffEDE8E8), // Cor padrão
-
+                                        ? const Color(0xffD2D2D2)
+                                        : const Color(0xffEDE8E8),
                             borderRadius: BorderRadius.circular(13),
                             border: Border.all(color: const Color(0xff2B3649)),
                             boxShadow: [
@@ -371,6 +378,30 @@ class _TasksListState extends State<TasksList> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                 ),
+                              ),
+                              // StreamBuilder para verificar se tem tarefas no dia
+                              StreamBuilder<QuerySnapshot>(
+                                stream: getTasks(familyId, date),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  }
+                                  if (snapshot.hasData &&
+                                      snapshot.data!.docs.isNotEmpty) {
+                                    return Container(
+                                      margin: const EdgeInsets.only(top: 10),
+                                      height: 4, 
+                                      width: 40, 
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xff2B3649),
+                                        borderRadius: BorderRadius.circular(
+                                            10), 
+                                      ),
+                                    );
+                                  }
+                                  return Container(); // Sem a linha para os que não têm tarefa
+                                },
                               ),
                             ],
                           ),

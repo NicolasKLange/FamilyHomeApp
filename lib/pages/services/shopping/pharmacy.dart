@@ -16,7 +16,7 @@ class _PharmacyState extends State<Pharmacy> {
   Stream? todoStream;
   final user = FirebaseAuth.instance.currentUser!;
   final DatabaseMethods _databaseMethods = DatabaseMethods();
-  final String category = "Farmácia"; // Define a categoria
+  final String category = "Farmácia";
 
   @override
   void initState() {
@@ -265,43 +265,47 @@ class _PharmacyState extends State<Pharmacy> {
                       ),
                     ),
                     ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: snapshot.data.docs.length,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot ds = snapshot.data.docs[index];
+                      padding: EdgeInsets.zero,
+                      itemCount: snapshot.data.docs.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot ds = snapshot.data.docs[index];
 
-                          return CheckboxListTile(
-                            activeColor: const Color(0xFF577096),
-                            title: Text(
-                              ds['Product'],
-                              style: const TextStyle(
-                                  color: Color(0xFF2B3649),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400),
+                        return CheckboxListTile(
+                          activeColor: const Color(0xFF577096),
+                          title: Text(
+                            ds['Product'],
+                            style: const TextStyle(
+                              color: Color(0xFF2B3649),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400,
                             ),
-                            value: ds['Yes'],
-                            onChanged: (newValue) async {
-                              String? familyId = await DatabaseMethods()
-                                  .getFamilyId(); // Obtém o familyId
+                          ),
+                          value: ds['Yes'], // Estado atual do checkbox
+                          onChanged: (newValue) async {
+                            String? familyId = await DatabaseMethods()
+                                .getFamilyId(); // Obtém o familyId
 
-                              if (familyId != null) {
-                                await DatabaseMethods().updateIfTicked(
-                                    familyId, category, ds['Id']);
-                                setState(() {});
-                              } else {
-                                // Se não encontrar o familyId, exibe uma mensagem de erro
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(
-                                          'Erro: Nenhuma família encontrada para este usuário.')),
-                                );
-                              }
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
-                          );
-                        }),
+                            if (familyId != null) {
+                              // Alternar entre marcado e desmarcado
+                              await DatabaseMethods().updateIfTicked(
+                                  familyId, category, ds['Id'], !ds['Yes']);
+                              setState(() {}); // Atualizar a UI
+                            } else {
+                              // Exibir erro se o familyId não for encontrado
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      'Erro: Nenhuma família encontrada para este usuário.'),
+                                ),
+                              );
+                            }
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                        );
+                      },
+                    ),
                   ],
                 ),
               )
@@ -364,12 +368,14 @@ class _PharmacyState extends State<Pharmacy> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
-        
+
             if (!snapshot.hasData || snapshot.data == null) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Container(
                     margin: const EdgeInsets.only(
                         right: 43, left: 43, top: 30, bottom: 10),
@@ -425,11 +431,13 @@ class _PharmacyState extends State<Pharmacy> {
                 ],
               );
             }
-        
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
@@ -438,7 +446,8 @@ class _PharmacyState extends State<Pharmacy> {
                   decoration: BoxDecoration(
                     color: const Color(0xFFEDE8E8),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFF2B3649), width: 2),
+                    border:
+                        Border.all(color: const Color(0xFF2B3649), width: 2),
                   ),
                   child: Row(
                     children: [
@@ -658,7 +667,7 @@ class _PharmacyState extends State<Pharmacy> {
           ),
         ),
       );
-      void addProduct(String productName) async {
+  void addProduct(String productName) async {
     String? familyId = await _databaseMethods.getFamilyId();
     if (familyId != null) {
       String id = randomAlphaNumeric(10); // Gerando um ID único para o produto
@@ -667,8 +676,7 @@ class _PharmacyState extends State<Pharmacy> {
         "Yes": false,
         "Id": id
       };
-      await _databaseMethods.addProduct(
-          familyId, "Farmácia", productData, id);
+      await _databaseMethods.addProduct(familyId, "Farmácia", productData, id);
     }
   }
 
