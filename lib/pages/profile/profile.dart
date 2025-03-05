@@ -33,7 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         children: [
           Container(
-            margin: const EdgeInsets.only(left: 30, right: 30, top: 50),
+            margin: const EdgeInsets.only(left: 50, right: 50, top: 50),
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
             decoration: BoxDecoration(
               color: const Color(0xFFEDE8E8),
@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 40),
                 Container(
                   padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  margin: const EdgeInsets.symmetric(horizontal: 50),
                   decoration: BoxDecoration(
                     color: const Color(0XFFEDE8E8),
                     border:

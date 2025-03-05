@@ -198,7 +198,6 @@ class ShoppingScreen extends StatelessWidget {
         if (!snapshot.hasData || !snapshot.data!.exists) {
           return const Center(child: CircularProgressIndicator());
         }
-        print("Campos disponíveis: ${snapshot.data!.data()}");
 
         final String familyId = snapshot.data!['idFamilia'] ?? '';
 
