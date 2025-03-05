@@ -1,3 +1,4 @@
+import 'package:family_home_app/pages/login/forgot_password_page.dart';
 import 'package:family_home_app/servicesAuth/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -59,9 +60,9 @@ class _LoginPageState extends State<LoginPage> {
   // Mensagem de erro no topo da tela
   void showErrorMessage(String message) {
     Get.snackbar(
-      'Erro de Login', // Título
-      'Verifique seu email ou senha', // Mensagem
-      backgroundColor: const  Color(0xFF2B3649),
+      'Erro de Login',
+      'Verifique seu email ou senha',
+      backgroundColor: const Color(0xFF2B3649),
       colorText: const Color(0xFFEDE8E8),
       snackPosition: SnackPosition.TOP,
       margin: const EdgeInsets.all(8.0),
@@ -121,17 +122,31 @@ class _LoginPageState extends State<LoginPage> {
                   height: 13,
                 ),
                 //Esqueceu a senha
-                const Padding(
+                Padding(
                   //Deixar com margem do lado
                   padding: EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
                     //Desixar no fim da linha
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        "Esqueceu a senha?",
-                        style:
-                            TextStyle(color: Color(0xFFEDE8E8), fontSize: 15),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return ForgotPasswoardPage();
+                              },
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Esqueceu a senha?",
+                          style: TextStyle(
+                              color: Color(0xFFEDE8E8),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),

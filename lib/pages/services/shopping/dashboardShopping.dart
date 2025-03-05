@@ -189,84 +189,140 @@ class ShoppingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
 
-    return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('Users')
-          .doc(user.uid)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData || !snapshot.data!.exists) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    return Scaffold(
+      backgroundColor: const Color(0xFFA8BEE0),
+      body: Center(
+        child: FutureBuilder<String?>(
+          future: DatabaseMethods().getFamilyId(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-        final String familyId = snapshot.data!['idFamilia'] ?? '';
-
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _buildHeader(context),
-              Expanded(
-                child: FutureBuilder<DocumentSnapshot>(
-                  future: FirebaseFirestore.instance
-                      .collection('Users')
-                      .doc(user.uid)
-                      .get(),
-                  builder: (context, userSnapshot) {
-                    if (!userSnapshot.hasData) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    final String familyId = userSnapshot.data!.get('idFamilia');
-
-                    return GridView.count(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 18,
-                      mainAxisSpacing: 18,
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.all(30),
-                      childAspectRatio: 1,
+            if (!snapshot.hasData || snapshot.data == null) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 43, vertical: 30),
+                    padding: const EdgeInsets.only(bottom: 5, top: 5, left: 20),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEDE8E8),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFF2B3649), width: 2),
+                    ),
+                    child: Row(
                       children: [
-                        _buildDashboardButton(
-                            context,
-                            'Mercado',
-                            Icons.fastfood_rounded,
-                            '/supermarket',
-                            'Mercado',
-                            familyId),
-                        _buildDashboardButton(
-                            context,
-                            'Farmácia',
-                            Icons.local_pharmacy_rounded,
-                            '/pharmacy',
-                            'Farmácia',
-                            familyId),
-                        _buildDashboardButton(
-                            context,
-                            'Roupas',
-                            Icons.store_mall_directory,
-                            '/clothes',
-                            'Roupas',
-                            familyId),
-                        _buildDashboardButton(
-                            context,
-                            'Escola',
-                            Icons.school_rounded,
-                            '/school',
-                            'Escola',
-                            familyId),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const SizedBox(width: 40),
+                        const Text(
+                          'Compras', 
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        )
                       ],
-                    );
-                  },
-                ),
-              )
-            ],
-          ),
-        );
-      },
+                    ),
+                  ),
+                  const SizedBox(height: 300),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Você não pertence a uma família"),
+                        const SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/homePage');
+                          },
+                          child: const Text(
+                            "Toque aqui para voltar e criar uma família",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2B3649),
+                              fontSize: 17,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            // Se o usuário pertence a uma família, mostra a tela de compras normalmente
+            return StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Users')
+                  .doc(user.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData || !snapshot.data!.exists) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final String familyId = snapshot.data!['idFamilia'] ?? '';
+
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _buildHeader(context),
+                      Expanded(
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 18,
+                          mainAxisSpacing: 18,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.all(30),
+                          childAspectRatio: 1,
+                          children: [
+                            _buildDashboardButton(
+                                context,
+                                'Mercado',
+                                Icons.fastfood_rounded,
+                                '/supermarket',
+                                'Mercado',
+                                familyId),
+                            _buildDashboardButton(
+                                context,
+                                'Farmácia',
+                                Icons.local_pharmacy_rounded,
+                                '/pharmacy',
+                                'Farmácia',
+                                familyId),
+                            _buildDashboardButton(
+                                context,
+                                'Roupas',
+                                Icons.store_mall_directory,
+                                '/clothes',
+                                'Roupas',
+                                familyId),
+                            _buildDashboardButton(
+                                context,
+                                'Escola',
+                                Icons.school_rounded,
+                                '/school',
+                                'Escola',
+                                familyId),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
     );
   }
+
 
   Widget _buildDashboardButton(BuildContext context, String title,
       IconData icon, String route, String category, String familyId) {
