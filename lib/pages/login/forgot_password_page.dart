@@ -45,7 +45,14 @@ class _ForgotPasswoardPageState extends State<ForgotPasswoardPage> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: Text('Link para aleterar senha enviado! Olhe seu email'),
+              backgroundColor: const Color(0xFF577096),
+              content: Text(
+                'Link para aleterar senha enviado! Olhe seu email',
+                style: TextStyle(
+                  color: const Color(0xFFEDE8E8),
+                  fontSize: 17,
+                ),
+              ),
             );
           });
     } on FirebaseAuthException catch (e) {
@@ -58,6 +65,7 @@ class _ForgotPasswoardPageState extends State<ForgotPasswoardPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF577096),
+        automaticallyImplyLeading: false,
       ),
       backgroundColor: const Color(0xFF577096),
       body: Column(
@@ -120,6 +128,22 @@ class _ForgotPasswoardPageState extends State<ForgotPasswoardPage> {
               ),
             ),
           ),
+          const SizedBox(
+            height: 30,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Voltar para página de login',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xFFEDE8E8),
+                fontWeight: FontWeight.bold
+              ),
+            ),
+          )
         ],
       ),
     );
