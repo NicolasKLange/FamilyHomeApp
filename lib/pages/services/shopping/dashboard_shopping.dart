@@ -3,7 +3,7 @@ import 'package:family_home_app/database/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../../../assets/components/navigation_bar/customNavigationBar.dart';
+import '../../../assets/components/navigation_bar/custom_navigation_bar.dart';
 import '../../family/family.dart';
 import '../../profile/profile.dart';
 

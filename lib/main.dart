@@ -1,7 +1,7 @@
 import 'package:family_home_app/pages/family/family.dart';
 import 'package:family_home_app/pages/home/home_page.dart';
 import 'package:family_home_app/pages/services/shopping/clothes.dart';
-import 'package:family_home_app/pages/services/shopping/dashboardShopping.dart';
+import 'package:family_home_app/pages/services/shopping/dashboard_shopping.dart';
 import 'package:family_home_app/pages/services/shopping/pharmacy.dart';
 import 'package:family_home_app/pages/services/shopping/school.dart';
 import 'package:family_home_app/pages/services/tasksList/tasksList.dart';
