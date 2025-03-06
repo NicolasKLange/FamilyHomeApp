@@ -13,7 +13,6 @@ import 'firebase_options.dart';
 import 'pages/login/auth_page.dart';
 import 'package:get/get.dart';
 import 'pages/services/shopping/supermarket.dart';
-import 'testeToDoList/homeToDoList.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +34,6 @@ class MyApp extends StatelessWidget {
       routes: {
         'authPage': (context) => const AuthPage(),
         '/shopping': (context) => const Shopping(),
-        '/toDoList': (context) => const HomeToDoList(),
         '/tasksList': (context) =>  const TasksList(),
         '/homePage': (context) => const HomePage(),
         '/supermarket': (context) => const Supermarket(),
