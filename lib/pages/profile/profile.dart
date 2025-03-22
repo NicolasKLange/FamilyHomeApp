@@ -17,7 +17,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final DatabaseMethods _userDatabase = DatabaseMethods();
   final String userId = FirebaseAuth.instance.currentUser!.uid;
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController cpfController = TextEditingController();
   final TextEditingController birthdateController = TextEditingController();
   Color avatarColor = Colors.grey.shade300;
 
@@ -143,31 +142,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Campo de CPF
                       Row(
                         children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: TextField(
-                                controller: cpfController,
-                                decoration: const InputDecoration(
-                                  labelText: 'CPF',
-                                  labelStyle: TextStyle(
-                                    fontSize: 18,
-                                    color: Color(
-                                      (0xFF2B3649),
-                                    ),
-                                  ),
-                                  hintText: 'xxx.xxx.xxx-xx',
-                                  hintStyle: TextStyle(
-                                      fontSize: 16, color: Colors.grey),
-                                  border: InputBorder.none,
-                                ),
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  MaskedInputFormatter('000.000.000-00')
-                                ],
-                              ),
-                            ),
-                          ),
                           // Campo de data de nascimento
                           Expanded(
                             child: Padding(
@@ -247,7 +221,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final userProfile = await _userDatabase.getUserProfile(userId);
     setState(() {
       nameController.text = userProfile['name'] ?? '';
-      cpfController.text = userProfile['cpf'] ?? '';
       birthdateController.text = userProfile['birthdate'] ?? '';
 
       // Carregar a cor escolhida para o Firebase
@@ -261,7 +234,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _updateProfile() async {
     await FirebaseFirestore.instance.collection('Users').doc(user!.uid).update({
       'name': nameController.text,
-      'cpf': cpfController.text.isEmpty ? null : cpfController.text,
       'birthdate':
           birthdateController.text.isEmpty ? null : birthdateController.text,
       'avatarColor':

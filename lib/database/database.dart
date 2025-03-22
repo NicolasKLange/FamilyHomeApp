@@ -89,7 +89,6 @@ class DatabaseMethods {
     if (!docSnapshot.exists) {
       await userDoc.set({
         'name': email, // Nome inicial baseado no e-mail
-        'cpf': null,
         'birthdate': null,
         'idFamilia': null, // Inicialmente sem família
         'id': userId, // Adiciona o id
@@ -99,11 +98,10 @@ class DatabaseMethods {
 
   // Atualizar informações do perfil do usuário
   Future<void> updateUserProfile(
-      String name, String? cpf, String? birthdate, String userId) async {
+      String name, String? birthdate, String userId) async {
     final userDoc = _firestore.collection('Users').doc(userId);
     await userDoc.update({
       'name': name,
-      'cpf': cpf,
       'birthdate': birthdate,
     });
   }
