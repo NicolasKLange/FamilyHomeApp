@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import '../../database/database.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -165,6 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 inputFormatters: [
                                   MaskedInputFormatter('00/00/0000'),
                                 ],
+                                onChanged: validateDate,
                               ),
                             ),
                           ),
@@ -213,6 +215,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  void validateDate(String value) {
+    if (value.length == 10) {
+      try {
+        DateFormat format = DateFormat('dd/MM/yyyy');
+        DateTime date = format.parseStrict(value);
+
+        if (date.year > 2030) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Ano não pode ser maior que 2030!'),
+            ),
+          );
+          birthdateController.clear();
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Data inválida!'),
+          ),
+        );
+        birthdateController.clear();
+      }
+    }
   }
 
   Future<void> _initializeProfile() async {
